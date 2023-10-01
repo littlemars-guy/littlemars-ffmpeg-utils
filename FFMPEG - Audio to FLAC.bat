@@ -1,4 +1,6 @@
-:: Extract audio only and convert to flac
+::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+::Extract audio only and convert to flac
 @echo off
 
 :again

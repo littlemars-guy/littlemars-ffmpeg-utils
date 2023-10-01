@@ -1,3 +1,5 @@
+::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
 :: this script will convert its input to a ProRes encoded .mov file
 @echo off
 chcp 65001
