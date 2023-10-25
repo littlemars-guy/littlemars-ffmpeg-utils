@@ -23,7 +23,7 @@ rem Get bits per sample
 set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=bits_per_sample -of default=noprint_wrappers=1 "%file%""
 for /F "delims=" %%I in ('!ffprobe!') do set "bits=%%I"
 
-if /i "%bits%"=="bits_per_sample=32" (
+if /i "%bits:~-2%"=="32" (
     goto :errorbits32
 ) else (
     goto :encode
