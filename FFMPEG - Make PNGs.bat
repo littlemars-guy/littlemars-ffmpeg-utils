@@ -1,6 +1,6 @@
 ::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-:: this script will extract the frames of selected videos to an image sequence
+::This script will extract the frames of selected videos to an image sequence
 @echo off
 chcp 65001
 cls
