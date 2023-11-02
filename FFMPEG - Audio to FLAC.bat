@@ -1,5 +1,5 @@
 ::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-
+::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::Extract audio only and convert to flac
 @echo off
 
@@ -14,12 +14,12 @@ set "file=%~1"
 set "codec=unknown"
 set "bits=unknown"
 
-rem Get codec name
+rem Get audio codec name
 setlocal EnableDelayedExpansion
 set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1 "%file%""
 for /F "delims=" %%I in ('!ffprobe!') do set "codec=%%I"
 
-rem Get bits per sample
+rem Get audio bits per sample
 set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=bits_per_sample -of default=noprint_wrappers=1 "%file%""
 for /F "delims=" %%I in ('!ffprobe!') do set "bits=%%I"
 
@@ -34,6 +34,9 @@ ffmpeg ^
 	-i "%~1" ^
 	-vn ^
 	-c:a flac ^
+	-map_metadata 0 ^
+	-movflags use_metadata_tags ^
+	-write_id3v2 1 ^
 	"%~dp1%~n1.flac"
 	
 if NOT ["%errorlevel%"]==["0"] goto:error
