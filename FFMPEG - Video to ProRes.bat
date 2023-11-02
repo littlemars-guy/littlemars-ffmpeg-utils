@@ -1,16 +1,19 @@
 ::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-
-:: this script will convert its input to a ProRes encoded .mov file
+::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::This script will convert its input to a ProRes encoded .mov file
 @echo off
 chcp 65001
 cls
 
 :next
+::	Placing the title
 	title FFMPEG - Converting %~nx1 to ProRes
-	
+
+:: Check if output file already exists
 	if exist "%~1.mov" goto:errorfile
 	if "%~1" == "" goto:done
-	
+
+::	Let's go!
 	echo.
 	echo [92m╔══════════════════════════════════════════════════════╗
 	echo [92m║========== CONVERTING THE PRORES OUT OF IT! ==========║
@@ -49,6 +52,8 @@ cls
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
 			-c:a copy ^
+			-map_metadata 0 ^
+			-movflags use_metadata_tags ^
 			-stats "%~dp1%~n1_ProResProxy.mov"
 			GOTO:ENDOFPRORES
 
@@ -65,6 +70,8 @@ cls
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
 			-c:a copy ^
+			-map_metadata 0 ^
+			-movflags use_metadata_tags ^
 			-stats "%~dp1%~n1_ProRes422.mov"
 			GOTO:ENDOFPRORES
 				
@@ -81,6 +88,8 @@ cls
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
 			-c:a copy ^
+			-map_metadata 0 ^
+			-movflags use_metadata_tags ^
 			-stats "%~dp1%~n1_ProRes422HQ.mov"
 			GOTO:ENDOFPRORES
 				
@@ -97,6 +106,8 @@ cls
 			-bits_per_mb 8000 ^
 			-pix_fmt yuva444p10le ^
 			-c:a copy ^
+			-map_metadata 0 ^
+			-movflags use_metadata_tags ^
 			-stats "%~dp1%~n1_ProRes4444.mov"
 			GOTO:ENDOFPRORES
 				
@@ -113,6 +124,8 @@ cls
 			-bits_per_mb 8000 ^
 			-pix_fmt yuva444p10le ^
 			-c:a copy ^
+			-map_metadata 0 ^
+			-movflags use_metadata_tags ^
 			-stats "%~dp1%~n1_ProRes4444XQ.mov"
 			GOTO:ENDOFPRORES
 
@@ -143,19 +156,28 @@ cls
 	echo  [93mCheck the output folder before trying again!
 	echo.
 	pause
-	goto:done
+	goto:end
 :error
 	
 	echo [93mThere was an error. Please check your input file.[0m
 	pause
 	exit 0
 
-:done
-timeout /t 10
-exit
-
-
-::FFPROBE - obtain audio bit depth
-for /F "delims=" %%I in ('C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\bin\ffprobe -v error -select_streams a:0 -show_entries stream=bits_per_sample -of default=noprint_wrappers=1:nokey=1 "%~1"') do set "abitdep=%%I"
-::SIMPLE MATH - get number of digits in frame number value and store in %Len variable
-echo %abitdep%
+:end
+
+cls
+echo [92mEncoding succesful. This window will close after 5 seconds.[0m
+timeout /t 1 > nul
+cls
+echo [92mEncoding succesful. This window will close after 4 seconds.[0m
+timeout /t 1 > nul
+cls
+echo [92mEncoding succesful. This window will close after 3 seconds.[0m
+timeout /t 1 > nul
+cls
+echo [92mEncoding succesful. This window will close after 2 seconds.[0m
+timeout /t 1 > nul
+cls
+echo [92mEncoding succesful. This window will close after 1 seconds.[0m
+timeout /t 1 > nul
+exit 0
