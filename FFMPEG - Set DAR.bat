@@ -40,7 +40,7 @@ cls
 	echo [33m[4][0m. Move originals to a new folder named "-old"
 	echo.
 	
-	CHOICE /C 12345 /M "Enter your choice:"
+	CHOICE /C 1234 /M "Enter your choice:"
 	:: Note - list ERRORLEVELS in decreasing order
 	IF ERRORLEVEL 4 GOTO:FOLDEROLD
 	IF ERRORLEVEL 3 GOTO:FOLDERWIDE
@@ -95,7 +95,7 @@ cls
 		ffmpeg ^
 			-i "%~1" ^
 			-c copy ^
-			-aspect 16/9 ^
+			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
@@ -146,7 +146,7 @@ cls
 		ffmpeg ^
 			-i "%~1" ^
 			-c copy ^
-			-aspect 16/9 ^
+			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
@@ -194,7 +194,7 @@ cls
 		ffmpeg ^
 			-i "%~1" ^
 			-c copy ^
-			-aspect 16/9 ^
+			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%folder_wide%/%~n1-wide%~x1"
@@ -242,7 +242,7 @@ cls
 		ffmpeg ^
 			-i "%~1" ^
 			-c copy ^
-			-aspect 16/9 ^
+			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
