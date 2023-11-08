@@ -11,15 +11,15 @@ cls
 	echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
 	echo [92m╚══════════════════════════════════════════════════════╝[0m
 	echo.
-	echo [37mBut first I need you to specify the aspect ratio of the output:[0m
+	echo [37mBut first you have to specify the desired output aspect ratio:[0m
 	echo.
 	echo [33m[1][0m. 16:9 (1,78:1)
 	echo [33m[2][0m. 4:3 (1,33:1)
-	echo [33m[3][0m. 5:4 (1,25:1)
+	echo [33m[3][0m. 5:4  (1,25:1)
 	echo [33m[4][0m. custom (will ask in a moment)
 	echo.
 	
-	CHOICE /C 12345 /M "Enter your choice:"
+	CHOICE /C 1234 /M "Enter your choice:"
 	:: Note - list ERRORLEVELS in decreasing order
 	IF ERRORLEVEL 4 GOTO:custom_ar
 	IF ERRORLEVEL 3 set aspect_ratio="5/4" && goto:manage_origin
@@ -27,8 +27,12 @@ cls
 	IF ERRORLEVEL 1 set aspect_ratio="16/9" && goto:manage_origin
 
 	:custom_ar
-	set /p aspect_ratio=Write your desired aspect ratio (in the format WIDTH/HEIGHT ex.: 16/9), then press enter.
+	set aspect_ratio=""
+	set /p aspect_ratio=Enter your desired aspect ratio (such as WIDTH/HEIGHT ex.: "16/9"), then press enter.
 	if not defined aspect_ratio goto:custom_ar
+
+	echo(%aspect_ratio%|findstr /r /x "[0123456789]*/[0123456789]*" >nul || echo [93mInput should be NUMBER/NUMBER, example: 16/9[0m && echo. && goto:custom_ar
+
 	goto:manage_origin
 
 	:manage_origin
@@ -57,28 +61,27 @@ cls
 		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
 		goto:overwrite_CONVERT
-	::	Check if extension is .mp4
-	::	set extension=%~x1
-	::	if %extension%==.mp4 goto:overwrite_defcodec
-	::	if %extension%==.mov goto:overwrite_defcodec
-	::	if %extension%==.mkv goto:overwrite_defcodec
-	::	if %extension%==.avi goto:overwrite_defcodec
-	::
-	::	goto:errorUnrecognizedContainer
-
-
-	::	:overwrite_defcodec
-	::	Define video codec
-	::	for /F "delims=" %%I in ('@ffprobe -v error -select_streams v:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "detect=%%I"
-	::
-	::	set codec=%detect:~11%
-	::
-	::	if %codec%==h264 set rotatemeta="-aspect 16/9" && goto:overwrite_CONVERTh26x
-	::	if %codec%==h265 set rotatemeta="h265_metadata=sample_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
-	::	if %codec%==mpeg2 set rotatemeta="mpeg2_metadata=display_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
-	::	if %extension%==.mkv goto:overwrite_CONVERTmkv
-	::	if %extension%==.avi goto:overwrite_RemuxMKV
-	::	goto:errorcodec
+		::	Check if extension is .mp4
+		::	set extension=%~x1
+		::	if %extension%==.mp4 goto:overwrite_defcodec
+		::	if %extension%==.mov goto:overwrite_defcodec
+		::	if %extension%==.mkv goto:overwrite_defcodec
+		::	if %extension%==.avi goto:overwrite_defcodec
+		::
+		::	goto:errorUnrecognizedContainer
+		::
+		::	:overwrite_defcodec
+		::	Define video codec
+		::	for /F "delims=" %%I in ('@ffprobe -v error -select_streams v:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "detect=%%I"
+		::
+		::	set codec=%detect:~11%
+		::
+		::	if %codec%==h264 set rotatemeta="-aspect 16/9" && goto:overwrite_CONVERTh26x
+		::	if %codec%==h265 set rotatemeta="h265_metadata=sample_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
+		::	if %codec%==mpeg2 set rotatemeta="mpeg2_metadata=display_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
+		::	if %extension%==.mkv goto:overwrite_CONVERTmkv
+		::	if %extension%==.avi goto:overwrite_RemuxMKV
+		::	goto:errorcodec
 
 	:overwrite_CONVERT
 		if "%~1" == "" goto:done
