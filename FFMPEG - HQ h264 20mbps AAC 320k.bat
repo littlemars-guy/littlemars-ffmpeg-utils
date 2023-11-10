@@ -9,6 +9,7 @@
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
+
 @echo off
 chcp 65001
 cls
