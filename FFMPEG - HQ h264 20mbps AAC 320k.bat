@@ -1,4 +1,4 @@
-::	This scpript will encode input videos into .mp4s with libx264 at 20mbps with 3320kbps AAC audio
+::	This scpript will encode input videos into .mp4s with libx264 at 20mbps with 320kbps AAC audio
 ::
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
