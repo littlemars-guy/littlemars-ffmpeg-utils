@@ -1,7 +1,8 @@
+::	This script will remux its input to a mp4 with DAR set in metadata. No re-encoding will occour.
+::	
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::	This script will remux its input to a mp4 with DAR set in metadata. No re-encoding will occour.
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-11-10 Version 0.2
