@@ -1,6 +1,14 @@
-::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::Extract audio only and convert to flac
+::	This scpript will encode input videos into .mp4s with libx264 at 20mbps with 3320kbps AAC audio
+::
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-10 Version 0.2
+::		Minor formatting	
+::		Updated script description and license disclaimer
+::		Added changelog
+::	-----------------------------------------------------------------------------------------------
 @echo off
 chcp 65001
 cls
@@ -22,7 +30,7 @@ cls
 		echo. && echo.
 	:: Single pass with max bitrate
 		ffmpeg ^
-        -hide banner ^
+        -hide_banner ^
         -hwaccel auto ^
 		-i "%~1" ^
 		-map 0 ^
@@ -31,7 +39,7 @@ cls
         -preset slow ^
         -tune film ^
         -profile:v high ^
-	    -level auto ^
+	    -level 4.1 ^
 		-pix_fmt yuv420p ^
 		-c:a aac ^
         -b:a 256k ^
