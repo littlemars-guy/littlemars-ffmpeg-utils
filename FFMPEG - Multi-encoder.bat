@@ -299,7 +299,7 @@ cls
     goto:next
 :encode_single_pass
     ffmpeg ^
-        -hide banner ^
+        -hide_banner ^
         -hwaccel auto ^
 		-i "%~1" ^
 		-map 0 ^
@@ -320,7 +320,7 @@ cls
 
 :encode_pass1
     ffmpeg ^
-        -hide banner ^
+        -hide_banner ^
         -hwaccel auto ^
 		-i "%~1" ^
 		-map 0 ^
@@ -344,7 +344,7 @@ cls
     title %title_pass2%
 
     ffmpeg ^
-        -hide banner ^
+        -hide_banner ^
         -hwaccel auto ^
 		-i "%~1" ^
 		-map 0 ^
