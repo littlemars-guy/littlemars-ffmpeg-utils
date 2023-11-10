@@ -4,3 +4,5 @@ SendToBK/Mail Recipient.MAPIMail
 SendToBK/Compressed (zipped) Folder.ZFSendToTarget
 SendToBK/Documents.mydocs
 SendToBK/desktop.ini
+*.mbtree
+*.log
