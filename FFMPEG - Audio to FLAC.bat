@@ -1,6 +1,15 @@
-::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::Extract audio only and convert to flac
+::	This script will extract audio from source and save it as a new FLAC file
+::
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-10 Version 0.2
+::		Updated script description and license disclaimer.
+::		Added changelog
+::	-----------------------------------------------------------------------------------------------
+
 @echo off
 chcp 65001
 cls
