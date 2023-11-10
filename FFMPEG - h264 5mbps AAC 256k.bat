@@ -1,6 +1,16 @@
-::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::Extract audio only and convert to flac
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::
+::	This scpript will encode inputs to .mp4s with libx264 dual pass at 5mbps with 256kbps AAC audio
+::
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-10 Version 0.2
+::		Minor formatting	
+::		Updated script description and license disclaimer
+::		Added changelog
+::	-----------------------------------------------------------------------------------------------
 @echo off
 chcp 65001
 cls
@@ -22,6 +32,7 @@ cls
 		echo. && echo.
 
 		ffmpeg ^
+			-hide_banner ^
             -hwaccel auto ^
 			-i "%~1" ^
 			-map 0 ^
@@ -43,6 +54,7 @@ cls
             NUL
 
         ffmpeg ^
+			-hide_banner ^
             -hwaccel auto ^
 			-i "%~1" ^
 			-map 0 ^
