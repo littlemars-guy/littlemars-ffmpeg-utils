@@ -44,9 +44,16 @@ setlocal EnableDelayedExpansion
 	set /a Len=%Log:0=+1%
 
 	::ACTUAL ENCODING
-	echo Encoding...
-	
-    ffmpeg ^
+	color 0E
+	echo.
+	echo.
+	echo.
+	echo [101;93m ENCODING... [0m
+	echo.
+	ffmpeg ^
+		-hide_banner ^
+		-loglevel warning ^
+		-stats ^
 		-hwaccel auto ^
 		-y -i "%~1" ^
 		-f image2 ^

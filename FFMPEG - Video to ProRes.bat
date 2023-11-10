@@ -1,6 +1,15 @@
-::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::This script will convert its input to a ProRes encoded .mov file
+::	This script will convert its input to a ProRes encoded .mov file.
+::	
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-10 Version 0.2
+::		Minor formatting
+::		Updated script description and license disclaimer
+::		Added changelog
+::	-----------------------------------------------------------------------------------------------
+
 @echo off
 chcp 65001
 cls
@@ -38,11 +47,18 @@ cls
 	IF ERRORLEVEL 2 GOTO:PRStandard
 	IF ERRORLEVEL 1 GOTO:PRProxy
 
-	:PRProxy
-		echo [101;93m ENCODING... [0m
-		echo. && echo.
 
+	:PRProxy
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m ENCODING... [0m
+		echo.
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 0 ^
@@ -52,15 +68,21 @@ cls
 			-c:a copy ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			-stats "%~dp1%~n1_ProResProxy.mov"
+			"%~dp1%~n1_ProResProxy.mov"
 			GOTO:ENDOFPRORES
 
 	:PRStandard
 		color 0E
+		echo.
+		echo.
+		echo.		
 		echo [101;93m ENCODING... [0m
-		echo. && echo.
+		echo.
 
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^		
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 2 ^
@@ -70,15 +92,21 @@ cls
 			-c:a copy ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			-stats "%~dp1%~n1_ProRes422.mov"
+			"%~dp1%~n1_ProRes422.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR422HQ
 		color 0E
+		echo.
+		echo.
+		echo.		
 		echo [101;93m ENCODING... [0m
-		echo. && echo.
+		echo.
 
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 3 ^
@@ -88,15 +116,21 @@ cls
 			-c:a copy ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			-stats "%~dp1%~n1_ProRes422HQ.mov"
+			"%~dp1%~n1_ProRes422HQ.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR4444
 		color 0E
+		echo.
+		echo.
+		echo.		
 		echo [101;93m ENCODING... [0m
-		echo. && echo.
+		echo.
 
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 4 ^
@@ -106,15 +140,21 @@ cls
 			-c:a copy ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			-stats "%~dp1%~n1_ProRes4444.mov"
+			"%~dp1%~n1_ProRes4444.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR4444XQ
 		color 0E
+		echo.
+		echo.
+		echo.		
 		echo [101;93m ENCODING... [0m
-		echo. && echo.
+		echo.
 
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 5 ^
@@ -124,7 +164,7 @@ cls
 			-c:a copy ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			-stats "%~dp1%~n1_ProRes4444XQ.mov"
+			"%~dp1%~n1_ProRes4444XQ.mov"
 			GOTO:ENDOFPRORES
 
 	:ENDOFPRORES

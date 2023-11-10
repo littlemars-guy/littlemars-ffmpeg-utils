@@ -2,7 +2,6 @@
 ::	
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-11-10 Version 0.2
@@ -97,13 +96,22 @@ cls
 		if exist "%~1-wide%~x1" goto:errorfile
 
 		::	Let's go!
+		cls
 		echo.
 		echo [92m╔══════════════════════════════════════════════════════╗
 		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
 		echo [92m╚══════════════════════════════════════════════════════╝[0m
 		echo.
-
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
+		echo.
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
@@ -148,13 +156,22 @@ cls
 		if exist "%~1-wide%~x1" goto:errorfile
 
 		::	Let's go!
+		cls
 		echo.
 		echo [92m╔══════════════════════════════════════════════════════╗
 		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
 		echo [92m╚══════════════════════════════════════════════════════╝[0m
 		echo.
-
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
+		echo.
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
@@ -196,13 +213,22 @@ cls
 		if exist "%~dp1%folder_wide%%~n1-wide%~x1" goto:errorfile
 
 	::	Let's go!
+		cls
 		echo.
 		echo [92m╔══════════════════════════════════════════════════════╗
 		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
 		echo [92m╚══════════════════════════════════════════════════════╝[0m
 		echo.
-
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
+		echo.
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
@@ -244,13 +270,22 @@ cls
 		if exist "%~1-wide%~x1" goto:errorfile
 
 	::	Let's go!
+		cls
 		echo.
 		echo [92m╔══════════════════════════════════════════════════════╗
 		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
 		echo [92m╚══════════════════════════════════════════════════════╝[0m
 		echo.
-
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
+		echo.
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c copy ^
 			-aspect %aspect_ratio% ^

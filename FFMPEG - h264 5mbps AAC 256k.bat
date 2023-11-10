@@ -25,14 +25,18 @@ cls
     ::	Let's go!
 	    echo.
 	    echo [92m╔══════════════════════════════════════════════════════╗
-	    echo [92m║========== REVVING UP FOR h264 COMPRESSION ===========║
+	    echo [92m║============== CONVERSION IN PROGRESS ================║
 	    echo [92m╚══════════════════════════════════════════════════════╝[0m
-	    echo.
-        echo [101;93m ENCODING... [0m
-		echo. && echo.
-
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m ENCODING PASS 1... [0m
+		echo.
 		ffmpeg ^
 			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
             -hwaccel auto ^
 			-i "%~1" ^
 			-map 0 ^
@@ -53,8 +57,21 @@ cls
 			-pass 1 -f mp4 ^
             NUL
 
-        ffmpeg ^
+		cls
+	    echo.
+	    echo [92m╔══════════════════════════════════════════════════════╗
+	    echo [92m║============== CONVERSION IN PROGRESS ================║
+	    echo [92m╚══════════════════════════════════════════════════════╝[0m
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m ENCODING PASS 2... [0m
+		echo.
+		ffmpeg ^
 			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
             -hwaccel auto ^
 			-i "%~1" ^
 			-map 0 ^

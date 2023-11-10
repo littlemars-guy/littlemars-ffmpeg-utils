@@ -1,3 +1,4 @@
+::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	This script will extract audio from source and save it as a new FLAC file
 ::
 ::	---LICENSE-------------------------------------------------------------------------------------
@@ -21,12 +22,17 @@ cls
 
 :analisys
 	set file=%~1
-	set codec=unknown
-	set bits=unknown
+	set codec=""
+	set bits=""
 
-	if %choice%="yes" goto:get_bits_per_sample
+	if /i "%choice%"=="yes" (
+    	goto :encode
+	) else (
+	    goto :get_codec
+	)
 
 	::	Get audio codec name
+	:get_codec
 	setlocal EnableDelayedExpansion
 	set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1 "%file%""
 	for /F "delims=" %%I in ('!ffprobe!') do set "codec=%%I"
@@ -50,16 +56,23 @@ cls
 
 :encode
 	if exist "%~dp1%~n1.flac" goto:errorfileexisting
-
-	ffmpeg ^
-		-i "%~1" ^
-		-vn ^
-		-c:a flac ^
-		-compression_level 12 -multi_dim_quant 1 -exact_rice_parameters 1 ^
-		-map_metadata 0 ^
-		-movflags use_metadata_tags ^
-		-write_id3v2 1 ^
-		"%~dp1%~n1.flac"
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m ENCODING... [0m
+		echo.
+		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
+			-i "%~1" ^
+			-vn ^
+			-c:a flac ^
+			-compression_level 12 -exact_rice_parameters 1 ^
+			-map_metadata 0 ^
+			-write_id3v2 1 ^
+			"%~dp1%~n1.flac"
 	
 	if NOT ["%errorlevel%"]==["0"] goto:error
 	endlocal
@@ -80,7 +93,7 @@ cls
 
 :error_already_flac
 	
-	echo [93mThere was an error. The input file audio codec is already encoded in FLAC.[0m
+	echo [93mThere was an error. The input file audio track is already encoded in FLAC.[0m
 	echo [93mDo you want to extract it to a separate file?[0m
 
 	echo [33m[1][0m. yes (save option for subsequent files in queue)

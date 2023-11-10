@@ -24,30 +24,34 @@ cls
     ::	Let's go!
 	    echo.
 	    echo [92m╔══════════════════════════════════════════════════════╗
-	    echo [92m║========== REVVING UP FOR h264 COMPRESSION ===========║
+	    echo [92m║============== CONVERSION IN PROGRESS ================║
 	    echo [92m╚══════════════════════════════════════════════════════╝[0m
-	    echo.
-        echo [101;93m ENCODING... [0m
-		echo. && echo.
-	:: Single pass with max bitrate
+		color 0E
+		echo.
+		echo.
+		echo.
+		echo [101;93m ENCODING... [0m
+		echo.
 		ffmpeg ^
-        -hide_banner ^
-        -hwaccel auto ^
-		-i "%~1" ^
-		-map 0 ^
-        -c:v libx264 -x264opts opencl ^
-        -crf 18 -maxrate 20M -bufsize 40M ^
-        -preset slow ^
-        -tune film ^
-        -profile:v high ^
-	    -level 4.1 ^
-		-pix_fmt yuv420p ^
-		-c:a aac ^
-        -b:a 256k ^
-        -map_metadata 0 ^
-		-movflags use_metadata_tags ^
-        -movflags +faststart ^
-		"%~dp1%~n1-h264-20mbps-AAC256k.mp4"
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
+    	    -hwaccel auto ^
+			-i "%~1" ^
+			-map 0 ^
+    	    -c:v libx264 -x264opts opencl ^
+    	    -crf 18 -maxrate 20M -bufsize 40M ^
+    	    -preset slow ^
+    	    -tune film ^
+    	    -profile:v high ^
+		    -level 4.1 ^
+			-pix_fmt yuv420p ^
+			-c:a aac ^
+    	    -b:a 256k ^
+    	    -map_metadata 0 ^
+			-movflags use_metadata_tags ^
+    	    -movflags +faststart ^
+			"%~dp1%~n1-h264-20mbps-AAC256k.mp4"
         goto:end
 ::	DUAL PASS (DEPRECATED)
 	::	ffmpeg ^
