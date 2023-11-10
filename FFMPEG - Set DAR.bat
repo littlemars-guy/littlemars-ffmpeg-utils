@@ -1,6 +1,14 @@
+::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::	This script will remux its input to a mp4 with DAR set to 16:9 in metadata. No re-encoding will occour.
+::	This script will remux its input to a mp4 with DAR set in metadata. No re-encoding will occour.
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	Version 0.2
+::		Added basic presets and prompt to input custom A/R
+::	-----------------------------------------------------------------------------------------------
+
+
 echo off
 chcp 65001
 cls
