@@ -68,7 +68,7 @@ cls
     IF ERRORLEVEL 8 title FFMPEG - Converting "%~1" NVENC single pass 2mbps && ^
                     set encoder="h264_nvenc" && ^
                     set preset="fast" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-b:v 2M -maxrate 3M -bufsize 6M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
@@ -79,19 +79,18 @@ cls
     IF ERRORLEVEL 7 title FFMPEG - Converting "%~1" libx264 fast CRF32 && ^
                     set encoder="libx264 -x264opts opencl" && ^
                     set preset="fast" && ^
-                    set tune="film" && ^
+                    set tune="-tune film" && ^
                     set bitrate_control="-crf 32 -maxrate 2M -bufsize 4M" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
                     set pix_fmt="yuv420p" && ^
                     set output_suffix="-h264CRF32-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 6 title FFMPEG - Converting "%~1" NVENC single pass 5mbps && ^
                     set encoder="h264_nvenc" && ^
                     set preset="fast" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-b:v 4M -maxrate 5M -bufsize 10M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
@@ -102,19 +101,18 @@ cls
     IF ERRORLEVEL 5 title FFMPEG - Converting "%~1" libx264 fast CRF28 && ^
                     set encoder="libx264 -x264opts opencl" && ^
                     set preset="fast" && ^
-                    set tune="film" && ^
+                    set tune="-tune film" && ^
                     set bitrate_control="-crf 28 -maxrate 5M -bufsize 10M" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
                     set pix_fmt="yuv420p" && ^
                     set output_suffix="-h264CRF28-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 4 title FFMPEG - Converting "%~1" NVENC single pass 10mbps && ^
                     set encoder="h264_nvenc" && ^
                     set preset="medium" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-b:v 8M -maxrate 10M -bufsize 20M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
@@ -125,19 +123,18 @@ cls
     IF ERRORLEVEL 3 title FFMPEG - Converting "%~1" libx264 medium CRF22 && ^
                     set encoder="libx264 -x264opts opencl" && ^
                     set preset="medium" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-crf 22" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 4.1" && ^
                     set pix_fmt="yuv420p" && ^
                     set output_suffix="-h264CRF22-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 2 title FFMPEG - Converting "%~1" NVENC single pass 20mbps && ^
                     set encoder="h264_nvenc" && ^
                     set preset="p7" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-rc constqp -qmin 17 -qmax 51 -qp 20 -maxrate 20M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 5.2" && ^
@@ -149,14 +146,13 @@ cls
     IF ERRORLEVEL 1 title FFMPEG - Converting "%~1" to High Quality h264 video with 256kbps AAC audio && ^
                     set encoder="libx264 -x264opts opencl" && ^
                     set preset="slow" && ^
-                    set tune="film" && ^
+                    set tune="-tune film" && ^
                     set bitrate_control="-crf 16" && ^
                     set profile="-profile:v high" && ^
                     set level="-level 5.2" && ^
                     set pix_fmt="yuv420p" && ^
                     set output_suffix="-h264CRF16-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
 
 :set_h265
@@ -196,7 +192,7 @@ cls
     IF ERRORLEVEL 8 title FFMPEG - Converting "%~1" NVENC single pass 2mbps && ^
                     set encoder="hevc_nvenc" && ^
                     set preset="fast" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-b:v 2M -maxrate 3M -bufsize 6M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile main10 -tier high" && ^
                     set level="" && ^
@@ -207,19 +203,18 @@ cls
     IF ERRORLEVEL 7 title FFMPEG - Converting "%~1" libx264 fast CRF32 && ^
                     set encoder="libx265" && ^
                     set preset="fast" && ^
-                    set tune="film" && ^
+                    set tune="-tune film" && ^
                     set bitrate_control="-crf 32 -maxrate 2M -bufsize 4M" && ^
                     set profile="-profile:v high" && ^
                     set level="" && ^
                     set pix_fmt="yuv420p10le" && ^
                     set output_suffix="-h265CRF32-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 6 title FFMPEG - Converting "%~1" NVENC single pass 5mbps && ^
                     set encoder="hevc_nvenc" && ^
                     set preset="fast" && ^
-                    set tune="hq" && ^
+                    set tune="-tune hq" && ^
                     set bitrate_control="-b:v 4M -maxrate 5M -bufsize 10M -rc-lookahead 4 -keyint_min 1 -qdiff 20 -qcomp 0.9 -g 300" && ^
                     set profile="-profile main10 -tier high" && ^
                     set level="" && ^
@@ -237,7 +232,6 @@ cls
                     set pix_fmt="yuv420p10le" && ^
                     set output_suffix="-h265CRF28-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 4 title FFMPEG - Converting "%~1" NVENC single pass 10mbps && ^
                     set encoder="hevc_nvenc" && ^
@@ -260,7 +254,6 @@ cls
                     set pix_fmt="yuv420p10le" && ^
                     set output_suffix="-h265CRF22-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
     IF ERRORLEVEL 2 title FFMPEG - Converting "%~1" NVENC single pass 20mbps && ^
                     set encoder="hevc_nvenc" && ^
@@ -284,7 +277,6 @@ cls
                     set pix_fmt="yuv420p10le" && ^
                     set output_suffix="-h265CRF16-AAC256k" && ^
                     set extension="mp4" && ^
-                    && set extension="mp4" && ^
                     goto:encode_single_pass
 
 :set_AV1
