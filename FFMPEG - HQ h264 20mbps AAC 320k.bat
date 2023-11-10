@@ -9,7 +9,7 @@ cls
 	title FFMPEG - Converting "%~1" to 20mbps h264 video with 320kbps AAC audio
 
     :: Check if output file already exists
-	    if exist "%~1_5mps_h264_256k_aac.mp4" goto:errorfile
+	    if exist "%~1_20mps_h264_256k_aac.mp4" goto:errorfile
 	    if "%~1" == "" goto:done
 
     ::	Let's go!
@@ -20,50 +20,70 @@ cls
 	    echo.
         echo [101;93m ENCODING... [0m
 		echo. && echo.
-
+	:: Single pass with max bitrate
 		ffmpeg ^
-            -hwaccel auto ^
-			-i "%~1" ^
-			-map 0 ^
-            -c:v libx264 ^
-            -x264opts opencl ^
-            -preset slow ^
-            -tune film ^
-            -profile:v high ^
-			-b:v 20M ^
-			-maxrate 25M ^
-			-bufsize 50M ^
-			-pix_fmt yuv420p ^
-			-c:a aac ^
-            -b:a 320k ^
-            -map_metadata 0 ^
-			-movflags use_metadata_tags ^
-            -movflags +faststart ^
-			-pass 1 -f mp4 ^
-            NUL
-
-        ffmpeg ^
-            -hwaccel auto ^
-			-i "%~1" ^
-			-map 0 ^
-            -c:v libx264 ^
-            -x264opts opencl ^
-            -preset slow ^
-            -tune film ^
-            -profile:v high ^
-			-b:v 20M ^
-			-maxrate 25M ^
-			-bufsize 50M ^
-			-pix_fmt yuv420p ^
-			-c:a aac ^
-            -b:a 320k ^
-            -map_metadata 0 ^
-			-movflags use_metadata_tags ^
-            -movflags +faststart ^
-			-pass 2 ^
-            "%~dp1%~n1_5mps_h264_256k_aac.mp4"
-
-			goto:end
+        -hide banner ^
+        -hwaccel auto ^
+		-i "%~1" ^
+		-map 0 ^
+        -c:v libx264 -x264opts opencl ^
+        -crf 18 -maxrate 20M -bufsize 40M ^
+        -preset slow ^
+        -tune film ^
+        -profile:v high ^
+	    -level auto ^
+		-pix_fmt yuv420p ^
+		-c:a aac ^
+        -b:a 256k ^
+        -map_metadata 0 ^
+		-movflags use_metadata_tags ^
+        -movflags +faststart ^
+		"%~dp1%~n1-h264-20mbps-AAC256k.mp4"
+        goto:end
+::	DUAL PASS (DEPRECATED)
+	::	ffmpeg ^
+	::		-hwaccel auto ^
+	::		-i "%~1" ^
+	::		-map 0 ^
+	::		-c:v libx264 ^
+    ::		-x264opts opencl ^
+    ::		-preset slow ^
+    ::		-tune film ^
+    ::		-profile:v high ^
+	::		-b:v 20M ^
+	::		-maxrate 25M ^
+	::		-bufsize 50M ^
+	::		-pix_fmt yuv420p ^
+	::		-c:a aac ^
+    ::		-b:a 320k ^
+    ::		-map_metadata 0 ^
+	::		-movflags use_metadata_tags ^
+    ::		-movflags +faststart ^
+	::		-pass 1 -f mp4 ^
+    ::		NUL
+	::
+    ::	ffmpeg ^
+    ::		-hwaccel auto ^
+	::		-i "%~1" ^
+	::		-map 0 ^
+    ::		-c:v libx264 ^
+    ::		-x264opts opencl ^
+    ::		-preset slow ^
+    ::		-tune film ^
+    ::		-profile:v high ^
+	::		-b:v 20M ^
+	::		-maxrate 25M ^
+	::		-bufsize 50M ^
+	::		-pix_fmt yuv420p ^
+	::		-c:a aac ^
+    ::		-b:a 320k ^
+    ::		-map_metadata 0 ^
+	::		-movflags use_metadata_tags ^
+    ::		-movflags +faststart ^
+	::		-pass 2 ^
+    ::		"%~dp1%~n1_20mps_h264_256k_aac.mp4"
+	::
+	::		goto:end
 
 :errorfile
 	
