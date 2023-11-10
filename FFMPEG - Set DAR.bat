@@ -4,7 +4,7 @@
 ::	This script will remux its input to a mp4 with DAR set in metadata. No re-encoding will occour.
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
-::	Version 0.2
+::	2023-11-10 Version 0.2
 ::		Added basic presets and prompt to input custom A/R
 ::	-----------------------------------------------------------------------------------------------
 
