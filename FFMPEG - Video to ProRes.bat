@@ -19,12 +19,10 @@ cls
 	echo [92m║========== CONVERTING THE PRORES OUT OF IT! ==========║
 	echo [92m╚══════════════════════════════════════════════════════╝[0m
 	echo.
-	echo [37mBut first I need you to specify the settings to use:[0m
-
-	echo [101;93m ENCODER [0m
+	echo [101;93m ENCODER SELECTION [0m
 
 :ENCODER
-	echo [1mSelect the ProRes profile of your choice:[0m
+	echo [1mSelect the desired ProRes flavour:[0m
 	echo [33m[1][0m. Proxy
 	echo [33m[2][0m. 422 Standard
 	echo [33m[3][0m. 422 HQ
