@@ -8,7 +8,6 @@
 ::		Added basic presets and prompt to input custom A/R
 ::	-----------------------------------------------------------------------------------------------
 
-
 echo off
 chcp 65001
 cls
