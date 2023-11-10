@@ -1,19 +1,31 @@
-::What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::	This script will extract the frames of selected videos to an image sequence
+::
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-10 Version 0.2
+::		Minor formatting	
+::		Updated script description and license disclaimer
+::		Added changelog
+::	-----------------------------------------------------------------------------------------------
 
-::This script will extract the frames of selected videos to an image sequence
 @echo off
 chcp 65001
 cls
 
 :next
+::	Placing title
 	title FFMPEG - Making PNGs from %~1
-	::SEARCH FOR A FOLDER WITH THE SAME NAME AS THE EXPECTED OUTPUT, IF FOUND GO TO FOLDER ERROR WARNING
+
+::	SEARCH FOR A FOLDER WITH THE SAME NAME AS THE EXPECTED OUTPUT, IF FOUND GO TO FOLDER ERROR WARNING
     IF EXIST "%~dp1\%~n1-png" goto:errorfolder
-	::IF NO MORE FILES ARE LEFT IN THE QUEUE GO TO DONE WARNING
+
+::	IF NO MORE FILES ARE LEFT IN THE QUEUE GO TO DONE WARNING
     if "%~1" == "" goto:done
 
-::CREATE A FOLDER TO PLACE THE OUTPUT IMAGES
 :MAKEFOLDER
+::	CREATE A FOLDER TO PLACE THE OUTPUT IMAGES
     md "%~dp1\%~n1-png%fldsfx%"
 	set "fldsfx="
     goto:ENCODE
@@ -25,8 +37,8 @@ setlocal EnableDelayedExpansion
 	cls
 	echo Counting frames...
 
-    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -count_frames -show_entries stream^=nb_read_frames -print_format default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "framecount=%%I"
-
+    ::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -count_frames -show_entries stream^=nb_read_frames -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "framecount=%%I"
+	for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nokey=1:noprint_wrappers=1 "%~1"') do set "framerate=%%I"
 	::SIMPLE MATH - get number of digits in frame number value and store in %Len variable
 	set /a Log=1%framecount:~1%-%framecount:~1% -0
 	set /a Len=%Log:0=+1%
