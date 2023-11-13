@@ -15,14 +15,11 @@ chcp 65001
 cls
 
 :next
-::	Placing the title
 	title FFMPEG - Converting %~nx1 to ProRes
-
-:: Check if output file already exists
+	:: Check if output file already exists
 	if exist "%~1.mov" goto:errorfile
 	if "%~1" == "" goto:done
-
-::	Let's go!
+	::	Let's go!
 	echo.
 	echo [92m╔══════════════════════════════════════════════════════╗
 	echo [92m║========== CONVERTING THE PRORES OUT OF IT! ==========║
@@ -47,14 +44,23 @@ cls
 	IF ERRORLEVEL 2 GOTO:PRStandard
 	IF ERRORLEVEL 1 GOTO:PRProxy
 
-
 	:PRProxy
-		color 0E
-		echo.
-		echo.
-		echo.
 		echo [101;93m ENCODING... [0m
-		echo.
+		echo. && echo.
+
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+        
+		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_proxy
+		set codec=copy
+		goto:encode_proxy
+
+		::	Get bits per sample
+		:bits_per_sample
+		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+
+		:encode_proxy
 		ffmpeg ^
 			-hide_banner ^
 			-loglevel warning ^
@@ -65,103 +71,134 @@ cls
 			-vendor apl0 ^
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
-			-c:a copy ^
+			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProResProxy.mov"
 			GOTO:ENDOFPRORES
 
 	:PRStandard
-		color 0E
-		echo.
-		echo.
-		echo.		
+		
 		echo [101;93m ENCODING... [0m
-		echo.
+		echo. && echo.
 
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+        
+		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_422
+		set codec=copy
+		goto:encode_422
+
+		::	Get bits per sample
+		:bits_per_sample
+		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+        
+		:encode_422
 		ffmpeg ^
 			-hide_banner ^
 			-loglevel warning ^
-			-stats ^		
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 2 ^
 			-vendor apl0 ^
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
-			-c:a copy ^
+			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProRes422.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR422HQ
-		color 0E
-		echo.
-		echo.
-		echo.		
+		
 		echo [101;93m ENCODING... [0m
-		echo.
+		echo. && echo.
 
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+        
+		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_422HQ
+		set codec=copy
+		goto:encode_422HQ
+
+		::	Get bits per sample
+		:bits_per_sample
+		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+        
+		:encode_422HQ
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 3 ^
 			-vendor apl0 ^
 			-bits_per_mb 8000 ^
 			-pix_fmt yuv422p10le ^
-			-c:a copy ^
+			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProRes422HQ.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR4444
-		color 0E
-		echo.
-		echo.
-		echo.		
+		
 		echo [101;93m ENCODING... [0m
-		echo.
+		echo. && echo.
 
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+        
+		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_4444
+		set codec=copy
+		goto:encode_4444
+
+		::	Get bits per sample
+		:bits_per_sample
+		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+        
+		:encode_4444
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 4 ^
 			-vendor apl0 ^
 			-bits_per_mb 8000 ^
 			-pix_fmt yuva444p10le ^
-			-c:a copy ^
+			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProRes4444.mov"
 			GOTO:ENDOFPRORES
 				
 	:PR4444XQ
-		color 0E
-		echo.
-		echo.
-		echo.		
+		
 		echo [101;93m ENCODING... [0m
-		echo.
+		echo. && echo.
 
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+        
+		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_4444XQ
+		set codec=copy
+		goto:encode_4444XQ
+
+		::	Get bits per sample
+		:bits_per_sample
+		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+        
+		:encode_4444XQ
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 5 ^
 			-vendor apl0 ^
 			-bits_per_mb 8000 ^
 			-pix_fmt yuva444p10le ^
-			-c:a copy ^
+			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProRes4444XQ.mov"
@@ -194,28 +231,13 @@ cls
 	echo  [93mCheck the output folder before trying again!
 	echo.
 	pause
-	goto:end
+	goto:done
 :error
 	
 	echo [93mThere was an error. Please check your input file.[0m
 	pause
 	exit 0
 
-:end
-
-cls
-echo [92mEncoding succesful. This window will close after 5 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 4 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 3 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 2 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 1 seconds.[0m
-timeout /t 1 > nul
-exit 0
+:done
+timeout /t 10
+exit
