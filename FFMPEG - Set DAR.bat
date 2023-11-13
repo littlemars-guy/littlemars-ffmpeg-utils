@@ -4,6 +4,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-13 Version 0.3
+::		New banner! YAY!
 ::	2023-11-10 Version 0.2
 ::		Added basic presets and prompt to input custom A/R
 ::	-----------------------------------------------------------------------------------------------
@@ -11,12 +13,29 @@
 echo off
 chcp 65001
 cls
-
+echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║
+echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+echo ║                                                                                                                  ║
+echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║
+echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+echo.
+echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+echo       storage / pixel aspect ratio.
 ::	User input
-	echo.
-	echo [92m╔══════════════════════════════════════════════════════╗
-	echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
-	echo [92m╚══════════════════════════════════════════════════════╝[0m
 	echo.
 	echo [37mBut first you have to specify the desired output aspect ratio:[0m
 	echo.
@@ -38,7 +57,7 @@ cls
 	set /p aspect_ratio=Enter your desired aspect ratio (such as WIDTH/HEIGHT ex.: "16/9"), then press enter.
 	if not defined aspect_ratio goto:custom_ar
 
-	echo(%aspect_ratio%|findstr /r /x "[0123456789]*/[0123456789]*" >nul || echo [93mInput should be NUMBER/NUMBER, example: 16/9[0m && echo. && goto:custom_ar
+	echo(%aspect_ratio%|findstr /r /x "[0123456789]*/[0123456789]*" > nul || echo [93mInput should be NUMBER/NUMBER, example: 16/9[0m && echo. && goto:custom_ar
 
 	goto:manage_origin
 
@@ -97,14 +116,28 @@ cls
 
 		::	Let's go!
 		cls
+		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+		echo ║                                                                                                                  ║
+		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 		echo.
-		echo [92m╔══════════════════════════════════════════════════════╗
-		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
-		echo [92m╚══════════════════════════════════════════════════════╝[0m
-		echo.
-		color 0E
-		echo.
-		echo.
+		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+		echo       storage / pixel aspect ratio.
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -157,14 +190,28 @@ cls
 
 		::	Let's go!
 		cls
+		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+		echo ║                                                                                                                  ║
+		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 		echo.
-		echo [92m╔══════════════════════════════════════════════════════╗
-		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
-		echo [92m╚══════════════════════════════════════════════════════╝[0m
-		echo.
-		color 0E
-		echo.
-		echo.
+		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+		echo       storage / pixel aspect ratio.
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -214,14 +261,28 @@ cls
 
 	::	Let's go!
 		cls
+		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+		echo ║                                                                                                                  ║
+		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 		echo.
-		echo [92m╔══════════════════════════════════════════════════════╗
-		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
-		echo [92m╚══════════════════════════════════════════════════════╝[0m
-		echo.
-		color 0E
-		echo.
-		echo.
+		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+		echo       storage / pixel aspect ratio.
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -271,14 +332,28 @@ cls
 
 	::	Let's go!
 		cls
+		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+		echo ║                                                                                                                  ║
+		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 		echo.
-		echo [92m╔══════════════════════════════════════════════════════╗
-		echo [92m║========== IT'S GONNA BE WIIIIIIIIIIIIIIIDE ==========║
-		echo [92m╚══════════════════════════════════════════════════════╝[0m
-		echo.
-		color 0E
-		echo.
-		echo.
+		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+		echo       storage / pixel aspect ratio.
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -367,21 +442,115 @@ cls
 	pause
 	exit 0
 
-:end
- 
-cls
-echo [92mEncoding succesful. This window will close after 5 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 4 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 3 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 2 seconds.[0m
-timeout /t 1 > nul
-cls
-echo [92mEncoding succesful. This window will close after 1 seconds.[0m
-timeout /t 1 > nul
-exit 0
+:done
+	cls
+	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+	echo ║                                                                                                                  ║
+	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92mEncoding succesful. This window will close after 5 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+	echo ║                                                                                                                  ║
+	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92mEncoding succesful. This window will close after 4 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+	echo ║                                                                                                                  ║
+	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92mEncoding succesful. This window will close after 3 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+	echo ║                                                                                                                  ║
+	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92mEncoding succesful. This window will close after 2 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
+	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
+	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
+	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
+	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
+	echo ║                                                                                                                  ║
+	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
+	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
+	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
+	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
+	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
+	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
+	timeout /t 1 > nul
+	exit 0
