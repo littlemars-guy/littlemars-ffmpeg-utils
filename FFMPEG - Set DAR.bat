@@ -6,6 +6,7 @@
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-11-13 Version 0.3
 ::		New banner! YAY!
+::		General clean up
 ::	2023-11-10 Version 0.2
 ::		Added basic presets and prompt to input custom A/R
 ::	-----------------------------------------------------------------------------------------------
@@ -86,34 +87,9 @@ echo       storage / pixel aspect ratio.
 		::	Placing title
 		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
-		goto:overwrite_CONVERT
-		::	Check if extension is .mp4
-		::	set extension=%~x1
-		::	if %extension%==.mp4 goto:overwrite_defcodec
-		::	if %extension%==.mov goto:overwrite_defcodec
-		::	if %extension%==.mkv goto:overwrite_defcodec
-		::	if %extension%==.avi goto:overwrite_defcodec
-		::
-		::	goto:errorUnrecognizedContainer
-		::
-		::	:overwrite_defcodec
-		::	Define video codec
-		::	for /F "delims=" %%I in ('@ffprobe -v error -select_streams v:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "detect=%%I"
-		::
-		::	set codec=%detect:~11%
-		::
-		::	if %codec%==h264 set rotatemeta="-aspect 16/9" && goto:overwrite_CONVERTh26x
-		::	if %codec%==h265 set rotatemeta="h265_metadata=sample_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
-		::	if %codec%==mpeg2 set rotatemeta="mpeg2_metadata=display_aspect_ratio=16/9" && goto:overwrite_CONVERTh26x
-		::	if %extension%==.mkv goto:overwrite_CONVERTmkv
-		::	if %extension%==.avi goto:overwrite_RemuxMKV
-		::	goto:errorcodec
-
-	:overwrite_CONVERT
 		if "%~1" == "" goto:done
 		::	Check if output file already exists	
 		if exist "%~1-wide%~x1" goto:errorfile
-
 		::	Let's go!
 		cls
 		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -152,27 +128,18 @@ echo       storage / pixel aspect ratio.
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
 
-			GOTO:overwrite_endofencode
-
-	:overwrite_endofencode
 		if NOT ["%errorlevel%"]==["0"] goto:error
-		
 		::delete original
 		setlocal EnableDelayedExpansion
 		DEL "%input%""
 		endlocal
-
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-
 		if "%~1" == "" goto:done
-
 		timeout /t 2
-
 		shift
 		goto:overwrite_next
-
 
 :KEEPBOTH
 	goto:keepboth_next
@@ -181,13 +148,9 @@ echo       storage / pixel aspect ratio.
 		::	Placing title
 		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
-		goto:keepboth_convert
-
-	:keepboth_convert
 		if "%~1" == "" goto:done
 		::	Check if output file already exists	
 		if exist "%~1-wide%~x1" goto:errorfile
-
 		::	Let's go!
 		cls
 		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -226,19 +189,12 @@ echo       storage / pixel aspect ratio.
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
 
-			GOTO:keepboth_endofencode
-
-	:keepboth_endofencode
 		if NOT ["%errorlevel%"]==["0"] goto:error
-		
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-
 		if "%~1" == "" goto:done
-
 		timeout /t 2
-
 		shift
 		goto:keepboth_next
 	
@@ -249,16 +205,12 @@ echo       storage / pixel aspect ratio.
 	::	Placing title
 		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
-		goto:folderwide_convert
-
-	:folderwide_convert
 		if "%~1" == "" goto:done
 	::	Check if output folder already exists, create if missing
 		set folder_wide=_wide
 		if not exist "%~dp1%folder_wide%"  mkdir "%~dp1%folder_wide%"
 	::	Check if output file already exists	
 		if exist "%~dp1%folder_wide%%~n1-wide%~x1" goto:errorfile
-
 	::	Let's go!
 		cls
 		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -297,19 +249,12 @@ echo       storage / pixel aspect ratio.
 			-movflags use_metadata_tags ^
 			"%~dp1%folder_wide%/%~n1-wide%~x1"
 
-			GOTO:folderwide_endofencode
-
-	:folderwide_endofencode
 		if NOT ["%errorlevel%"]==["0"] goto:error
-		
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-
 		if "%~1" == "" goto:done
-
 		timeout /t 2
-
 		shift
 		goto:folderwide_next
 	
@@ -320,16 +265,12 @@ echo       storage / pixel aspect ratio.
 	::	Placing title
 		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
-		goto:folderold_convert
-
-	:folderold_convert
 		if "%~1" == "" goto:done
 	::	Check if output folder already exists, create if missing
 		set folder_old=_old
 		if not exist "%~dp1%folder_old%"  mkdir "%~dp1%folder_old%"
 	::	Check if output file already exists	
 		if exist "%~1-wide%~x1" goto:errorfile
-
 	::	Let's go!
 		cls
 		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -368,25 +309,19 @@ echo       storage / pixel aspect ratio.
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1-wide%~x1"
 
-			GOTO:folderold_endofencode
-
-	:folderold_endofencode
 		if NOT ["%errorlevel%"]==["0"] goto:error
 		::	Move original to -old folder
 		move "%~1" "%~dp1%folder_old%"
 		::	Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-
 		if "%~1" == "" goto:done
-
 		timeout /t 2
-
 		shift
 		goto:folderold_next
 
 :errorUnrecognizedContainer
-	 
+
 	cls
 	echo.
 	echo  [93m╔══════════════════╗
