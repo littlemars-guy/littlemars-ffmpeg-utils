@@ -6,6 +6,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-14 Version 0.3
+::		Changed encoding approach from 2-pass to crf28 + maxrate 5M, should be faster
 ::	2023-11-10 Version 0.2
 ::		Minor formatting	
 ::		Updated script description and license disclaimer
@@ -45,7 +47,7 @@ cls
             -preset slow ^
             -tune fastdecode ^
             -profile:v high ^
-			-b:v 4M ^
+			-crf 28 ^
 			-maxrate 5M ^
 			-bufsize 10M ^
 			-pix_fmt yuv420p ^
@@ -54,44 +56,7 @@ cls
             -map_metadata 0 ^
 			-movflags use_metadata_tags ^
             -movflags +faststart ^
-			-pass 1 -f mp4 ^
-            NUL
-
-		cls
-	    echo.
-	    echo [92m╔══════════════════════════════════════════════════════╗
-	    echo [92m║============== CONVERSION IN PROGRESS ================║
-	    echo [92m╚══════════════════════════════════════════════════════╝[0m
-		color 0E
-		echo.
-		echo.
-		echo.
-		echo [101;93m ENCODING PASS 2... [0m
-		echo.
-		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-            -hwaccel auto ^
-			-i "%~1" ^
-			-map 0 ^
-            -c:v libx264 ^
-            -x264opts opencl ^
-            -preset slow ^
-            -tune fastdecode ^
-            -profile:v high ^
-			-b:v 4M ^
-			-maxrate 5M ^
-			-bufsize 10M ^
-			-pix_fmt yuv420p ^
-			-c:a aac ^
-            -b:a 256k ^
-            -map_metadata 0 ^
-			-movflags use_metadata_tags ^
-            -movflags +faststart ^
-			-pass 2 ^
             "%~dp1%~n1_5mps_h264_256k_aac.mp4"
-
 			goto:end
 
 :errorfile
