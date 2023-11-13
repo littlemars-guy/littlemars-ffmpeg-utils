@@ -4,12 +4,13 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-14-10 Version 0.2.1
+::		Partial banner update
 ::	2023-11-10 Version 0.2
 ::		Minor formatting
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
-
 @echo off
 chcp 65001
 cls
@@ -20,10 +21,17 @@ cls
 	if exist "%~1.mov" goto:errorfile
 	if "%~1" == "" goto:done
 	::	Let's go!
+	echo ╔═══════════════════════════════════════════════════════════════════╗
+	echo ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo ╚═══════════════════════════════════════════════════════════════════╝
 	echo.
-	echo [92m╔══════════════════════════════════════════════════════╗
-	echo [92m║========== CONVERTING THE PRORES OUT OF IT! ==========║
-	echo [92m╚══════════════════════════════════════════════════════╝[0m
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
 	echo [101;93m ENCODER SELECTION [0m
 
@@ -38,13 +46,24 @@ cls
 	
 	CHOICE /C 12345 /M "Enter your choice:"
 	:: Note - list ERRORLEVELS in decreasing order
-	IF ERRORLEVEL 5 GOTO:PR4444XQ
-	IF ERRORLEVEL 4 GOTO:PR4444
-	IF ERRORLEVEL 3 GOTO:PR422HQ
-	IF ERRORLEVEL 2 GOTO:PRStandard
-	IF ERRORLEVEL 1 GOTO:PRProxy
+	IF ERRORLEVEL 5 set choice="PR4444XQ" && GOTO:PR4444XQ
+	IF ERRORLEVEL 4 set choice="PR4444" && GOTO:PR4444
+	IF ERRORLEVEL 3 set choice="PR422HQ" && GOTO:PR422HQ
+	IF ERRORLEVEL 2 set choice="PRStandard" && GOTO:PRStandard
+	IF ERRORLEVEL 1 set choice="PRProxy" && GOTO:PRProxy
 
 	:PRProxy
+		cls
+		echo ╔═══════════════════════════════════════════════════════════════════════╗
+		echo ║  ooooooooo.   ooooooooo.     .oooooo.   ooooooo  ooooo oooooo   oooo  ║  
+		echo ║  `888   `Y88. `888   `Y88.  d8P'  `Y8b   `8888    d8'   `888.   .8'   ║  
+		echo ║   888   .d88'  888   .d88' 888      888    Y888..8P      `888. .8'    ║  
+		echo ║   888ooo88P'   888ooo88P'  888      888     `8888'        `888.8'     ║  
+		echo ║   888          888`88b.    888      888    .8PY888.        `888'      ║  
+		echo ║   888          888  `88b.  `88b    d88'   d8'  `888b        888       ║  
+		echo ║  o888o        o888o  o888o  `Y8bood8P'  o888o  o88888o     o888o      ║  
+		echo ╚═══════════════════════════════════════════════════════════════════════╝
+		echo.
 		echo [101;93m ENCODING... [0m
 		echo. && echo.
 
@@ -53,7 +72,7 @@ cls
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
         
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_proxy
-		set codec=copy
+		set codec_audio=copy
 		goto:encode_proxy
 
 		::	Get bits per sample
@@ -75,7 +94,7 @@ cls
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProResProxy.mov"
-			GOTO:ENDOFPRORES
+		GOTO:ENDOFPRORES
 
 	:PRStandard
 		
@@ -87,7 +106,7 @@ cls
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
         
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_422
-		set codec=copy
+		set codec_audio=copy
 		goto:encode_422
 
 		::	Get bits per sample
@@ -121,7 +140,7 @@ cls
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
         
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_422HQ
-		set codec=copy
+		set codec_audio=copy
 		goto:encode_422HQ
 
 		::	Get bits per sample
@@ -130,6 +149,9 @@ cls
         
 		:encode_422HQ
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 3 ^
@@ -152,7 +174,7 @@ cls
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
         
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_4444
-		set codec=copy
+		set codec_audio=copy
 		goto:encode_4444
 
 		::	Get bits per sample
@@ -161,6 +183,9 @@ cls
         
 		:encode_4444
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 4 ^
@@ -183,7 +208,7 @@ cls
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
         
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_4444XQ
-		set codec=copy
+		set codec_audio=copy
 		goto:encode_4444XQ
 
 		::	Get bits per sample
@@ -192,6 +217,9 @@ cls
         
 		:encode_4444XQ
 		ffmpeg ^
+			-hide_banner ^
+			-loglevel warning ^
+			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 5 ^
@@ -214,7 +242,7 @@ cls
 	timeout /t 3
 	
 	shift
-	goto:next
+	goto %choice%
 
 
 :errorfile
