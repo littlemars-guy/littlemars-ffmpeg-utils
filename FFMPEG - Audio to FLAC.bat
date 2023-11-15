@@ -63,7 +63,7 @@ goto:analisys
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo.
-ffmpeg ^
+	ffmpeg ^
 		-hide_banner ^
 		-loglevel warning ^
 		-stats ^
