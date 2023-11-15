@@ -4,6 +4,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-16 Version 0.3.1
+::		- Added "-map 0" after input to select all tracks
 ::	2023-11-13 Version 0.3
 ::		New banner! YAY!
 ::		General clean up
@@ -122,6 +124,7 @@ echo       storage / pixel aspect ratio.
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
@@ -183,6 +186,7 @@ echo       storage / pixel aspect ratio.
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
@@ -243,6 +247,7 @@ echo       storage / pixel aspect ratio.
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
@@ -303,6 +308,7 @@ echo       storage / pixel aspect ratio.
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
 			-map_metadata 0 ^
