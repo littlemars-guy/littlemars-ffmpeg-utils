@@ -5,6 +5,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-16 Version 0.3
+::		- Added "-map 0:a" after input to select all audio tracks
 ::	2023-11-10 Version 0.2
 ::		Minor formatting
 ::		Updated script description and license disclaimer
@@ -18,7 +20,7 @@ cls
 :again
 	title FFMPEG - Extracting audio from "%~1" to flac
 
-	goto:analisys
+goto:analisys
 
 :analisys
 	set file=%~1
@@ -49,9 +51,9 @@ cls
 	for /F "delims=" %%I in ('!ffprobe!') do set "bits=%%I"
 
 	if /i "%bits:~-2%"=="32" (
-    	goto :errorbits32
+	    goto :errorbits32
 	) else (
-	    goto :encode
+		goto :encode
 	)
 
 :encode
@@ -62,17 +64,18 @@ cls
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo.
-		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-			-i "%~1" ^
-			-vn ^
-			-c:a flac ^
-			-compression_level 12 -exact_rice_parameters 1 ^
-			-map_metadata 0 ^
-			-write_id3v2 1 ^
-			"%~dp1%~n1.flac"
+ffmpeg ^
+		-hide_banner ^
+		-loglevel warning ^
+		-stats ^
+		-i "%~1" ^
+		-map 0:a ^
+		-vn ^
+		-c:a flac ^
+		-compression_level 12 -exact_rice_parameters 1 ^
+		-map_metadata 0 ^
+		-write_id3v2 1 ^
+		"%~dp1%~n1.flac"
 	
 	if NOT ["%errorlevel%"]==["0"] goto:error
 	endlocal
