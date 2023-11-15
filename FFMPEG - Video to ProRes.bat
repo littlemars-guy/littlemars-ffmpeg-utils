@@ -4,15 +4,19 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
-::	2023-14-10 Version 0.2.5
-::		Reworked loop behavior when encoding multiple files
-::		Updated banners
-::	2023-14-10 Version 0.2.1
-::		Partial banner update
-::	2023-11-10 Version 0.2
-::		Minor formatting
-::		Updated script description and license disclaimer
-::		Added changelog
+::	2023-11-15 Version 0.3
+::		- Corrected bug: in loop function, when shifting to next file, the check would  happen before
+::		shifting causing an error with ffmpeg trying to convert a file that didn't exist
+::		- Introduced "-qscale:v (integer)" option to prevent overload of "-bits_per_mb (integer)"
+::	2023-11-14 Version 0.2.5
+::		- Reworked loop behavior when encoding multiple files
+::		- Updated banners
+::	2023-11-14 Version 0.2.1
+::		- Partial banner update
+::	2023-11-11 Version 0.2
+::		- Minor formatting
+::		- Updated script description and license disclaimer
+::		- Added changelog
 ::	-----------------------------------------------------------------------------------------------
 @echo off
 chcp 65001
@@ -86,7 +90,7 @@ cls
 		::	Get codec name
         setlocal EnableDelayedExpansion
         for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
-        
+
 		if /i "%codec:~11%"=="Opus" set codec_audio="pcm_s16le" && goto:encode_proxy
 		set codec_audio=copy
 		goto:encode_proxy
@@ -97,14 +101,13 @@ cls
 
 		:encode_proxy
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 0 ^
-			-quant_mat auto ^
+			-quant_mat proxy ^
 			-vendor apl0 ^
+			-qscale:v 13 ^
 			-bits_per_mb 250 ^
 			-pix_fmt yuv422p10le ^
 			-c:a %codec_audio% ^
@@ -113,10 +116,9 @@ cls
 			"%~dp1%~n1_ProResProxy.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
-			if "%~1" == "" goto:done
-	
 			timeout /t 3
 			shift
+			if "%~1" == "" goto:done
 			goto:PRProxy
 
 	:PRStandard
@@ -164,6 +166,7 @@ cls
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 2 ^
+			-qscale:v 8 ^
 			-quant_mat auto ^
 			-vendor apl0 ^
 			-bits_per_mb 875 ^
@@ -173,11 +176,10 @@ cls
 			-movflags use_metadata_tags ^
 			"%~dp1%~n1_ProRes422.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
-			
-			if "%~1" == "" goto:done
-	
+				
 			timeout /t 3
 			shift
+			if "%~1" == "" goto:done
 			goto:PRStandard
 				
 	:PR422HQ
@@ -225,6 +227,7 @@ cls
 			-i "%~1" ^
 			-c:v prores_ks ^
 			-profile:v 3 ^
+			-qscale:v 4 ^
 			-quant_mat auto ^
 			-vendor apl0 ^
 			-bits_per_mb 1350 ^
@@ -235,10 +238,9 @@ cls
 			"%~dp1%~n1_ProRes422HQ.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
-			if "%~1" == "" goto:done
-	
 			timeout /t 3
 			shift
+			if "%~1" == "" goto:done
 			goto:PR422HQ
 				
 	:PR4444
@@ -296,10 +298,9 @@ cls
 			"%~dp1%~n1_ProRes4444.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
-			if "%~1" == "" goto:done
-	
 			timeout /t 3
 			shift
+			if "%~1" == "" goto:done
 			goto:PR4444
 				
 	:PR4444XQ
@@ -358,10 +359,9 @@ cls
 
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
-			if "%~1" == "" goto:done
-	
 			timeout /t 3
 			shift
+			if "%~1" == "" goto:done
 			goto:PR4444XQ
 
 
@@ -392,5 +392,79 @@ cls
 	exit 0
 
 :done
-timeout /t 10
-exit
+	cls
+	echo           ╔═══════════════════════════════════════════════════════════════════╗
+	echo           ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo           ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo           ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo           ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo           ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo           ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo           ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo           ╚═══════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92m              Encoding succesful. This window will close after 5 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo           ╔═══════════════════════════════════════════════════════════════════╗
+	echo           ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo           ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo           ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo           ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo           ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo           ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo           ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo           ╚═══════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92m              Encoding succesful. This window will close after 4 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo           ╔═══════════════════════════════════════════════════════════════════╗
+	echo           ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo           ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo           ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo           ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo           ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo           ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo           ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo           ╚═══════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92m              Encoding succesful. This window will close after 3 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo           ╔═══════════════════════════════════════════════════════════════════╗
+	echo           ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo           ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo           ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo           ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo           ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo           ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo           ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo           ╚═══════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92m              Encoding succesful. This window will close after 2 seconds.[0m
+	timeout /t 1 > nul
+	cls
+	echo           ╔═══════════════════════════════════════════════════════════════════╗
+	echo           ║  ooooooooo.                      ooooooooo.                       ║ 
+	echo           ║  `888   `Y88.                    `888   `Y88.                     ║ 
+	echo           ║   888   .d88' oooo d8b  .ooooo.   888   .d88'  .ooooo.   .oooo.o  ║ 
+	echo           ║   888ooo88P'  `888""8P d88' `88b  888ooo88P'  d88' `88b d88(  "8  ║ 
+	echo           ║   888          888     888   888  888`88b.    888ooo888 `"Y88b.   ║ 
+	echo           ║   888          888     888   888  888  `88b.  888    .o o.  )88b  ║ 
+	echo           ║  o888o        d888b    `Y8bod8P' o888o  o888o `Y8bod8P' 8""888P'  ║
+	echo           ╚═══════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	echo.
+	echo [92m              Encoding succesful. This window will close after 1 seconds.[0m
+	timeout /t 1 > nul
+	exit 0
