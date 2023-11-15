@@ -58,7 +58,6 @@ goto:analisys
 
 :encode
 	if exist "%~dp1%~n1.flac" goto:errorfileexisting
-		color 0E
 		echo.
 		echo.
 		echo.
