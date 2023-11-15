@@ -4,9 +4,11 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-16 Version 0.3.1
+::		- Added "-map 0" after input to select all tracks
 ::	2023-11-15 Version 0.3
-::		- Corrected bug: in loop function, when shifting to next file, the check would  happen before
-::		shifting causing an error with ffmpeg trying to convert a file that didn't exist
+::		- Corrected bug: in loop function, when shifting to next file, the check would happen
+::		before shifting causing an error with ffmpeg trying to convert a file that didn't exist
 ::		- Introduced "-qscale:v (integer)" option to prevent overload of "-bits_per_mb (integer)"
 ::	2023-11-14 Version 0.2.5
 ::		- Reworked loop behavior when encoding multiple files
@@ -103,6 +105,7 @@ cls
 		ffmpeg ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c:v prores_ks ^
 			-profile:v 0 ^
 			-quant_mat proxy ^
@@ -164,6 +167,7 @@ cls
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c:v prores_ks ^
 			-profile:v 2 ^
 			-qscale:v 8 ^
@@ -225,6 +229,7 @@ cls
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c:v prores_ks ^
 			-profile:v 3 ^
 			-qscale:v 4 ^
@@ -286,6 +291,7 @@ cls
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c:v prores_ks ^
 			-profile:v 4 ^
 			-quant_mat auto ^
@@ -346,6 +352,7 @@ cls
 			-loglevel warning ^
 			-stats ^
 			-i "%~1" ^
+			-map 0 ^
 			-c:v prores_ks ^
 			-profile:v 5 ^
 			-quant_mat auto ^
