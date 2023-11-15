@@ -1,11 +1,13 @@
 ::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::
-::	This scpript will encode inputs to .mp4s with libx264 dual pass at 5mbps with 256kbps AAC audio
+::	This script will encode inputs to .mp4s h264 5mbps with 256kbps AAC audio
 ::
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-16 Version 0.3.1
+::		Partial banner update: added license disclaimer and info section
 ::	2023-11-14 Version 0.3
 ::		Changed encoding approach from 2-pass to crf28 + maxrate 5M, should be faster
 ::	2023-11-10 Version 0.2
@@ -29,9 +31,10 @@ cls
 	    echo [92m╔══════════════════════════════════════════════════════╗
 	    echo [92m║============== CONVERSION IN PROGRESS ================║
 	    echo [92m╚══════════════════════════════════════════════════════╝[0m
-		color 0E
 		echo.
+ 		echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 		echo.
+		echo INFO: This script will encode inputs to .mp4s h264 5mbps with 256kbps AAC audio
 		echo.
 		echo [101;93m ENCODING PASS 1... [0m
 		echo.
