@@ -5,6 +5,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-13 Version 0.3.1
+::		Fixed error in calculation of video duration
 ::	2023-11-13 Version 0.3
 ::		New method to count frames: multiplying duration by fps. This boosts speed of calculation
 ::		instead of using -sount_frames function of FFPROBE
@@ -58,7 +60,7 @@ chcp 65001
     
     setlocal enabledelayedexpansion
     ::  Get FPS
-    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries stream^=avg_frame_rate -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "framerate=%%I"
+    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries stream^=r_frame_rate -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "framerate=%%I"
     ::  Separation of FRAMES / SECONDS
     for /f "tokens=1,2 delims=/" %%i in ("!framerate!") do set frames=%%i && set seconds=%%j
     ::  Get duration
@@ -69,8 +71,8 @@ chcp 65001
     set /A duration_rounded="%duration_truncated%+1"
     set /A duration_by_frames="%duration_rounded%*%frames%"
     set /A frame_number="%duration_by_frames%/%seconds%"
-    set /a Log=1%frame_number:~1%-%frame_number:~1% -0
-    set /a Len=%Log:0=+1%
+    set /a Log="1%frame_number:~1%-%frame_number:~1% -0"
+    set /a Len="%Log:0=+1%"
     ::  Dump info to user
     echo [0m Duration: [30;107m %duration_rounded%s [0m
     echo [0m Frames per second: [30;107m %framerate%s [0m
