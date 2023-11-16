@@ -88,12 +88,9 @@ cls
     if NOT ["%errorlevel%"]==["0"] goto:error
 	echo [92m%~n1 Done![0m
 	title FFMPEG - We did it!
-
-	if "%~1" == "" goto:done
-	
-	timeout /t 3
-	
 	shift
+	if "%~1" == "" goto:done
+	timeout /t 3 > nul
 	goto:next
 
 :done
