@@ -5,7 +5,7 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
-::	2023-11-13 Version 0.3.1
+::	2023-11-16 Version 0.3.1
 ::		Fixed error in calculation of video duration
 ::	2023-11-13 Version 0.3
 ::		New method to count frames: multiplying duration by fps. This boosts speed of calculation
