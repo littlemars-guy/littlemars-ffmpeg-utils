@@ -4,6 +4,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-16 Version 0.2.1
+::		Corrected behavior when shifting to next file
 ::	2023-11-10 Version 0.2
 ::		Minor formatting	
 ::		Updated script description and license disclaimer
@@ -124,12 +126,9 @@ cls
     if NOT ["%errorlevel%"]==["0"] goto:error
 	echo [92m%~n1 Done![0m
 	title FFMPEG - We did it!
-
-	if "%~1" == "" goto:done
-	
-	timeout /t 3
-	
 	shift
+	if "%~1" == "" goto:done
+	timeout /t 3 > nul
 	goto:next
 
 :done
