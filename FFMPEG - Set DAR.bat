@@ -4,6 +4,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-18 Version 0.3.2
+::		- Fixed next file check happening before shift
 ::	2023-11-16 Version 0.3.1
 ::		- Added "-map 0" after input to select all tracks
 ::	2023-11-13 Version 0.3
@@ -139,9 +141,9 @@ echo       storage / pixel aspect ratio.
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-		if "%~1" == "" goto:done
 		timeout /t 2
 		shift
+		if "%~1" == "" goto:done
 		goto:overwrite_next
 
 :KEEPBOTH
@@ -197,9 +199,9 @@ echo       storage / pixel aspect ratio.
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-		if "%~1" == "" goto:done
 		timeout /t 2
 		shift
+		if "%~1" == "" goto:done
 		goto:keepboth_next
 	
 :FOLDERWIDE
@@ -258,9 +260,9 @@ echo       storage / pixel aspect ratio.
 		:: Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-		if "%~1" == "" goto:done
 		timeout /t 2
 		shift
+		if "%~1" == "" goto:done
 		goto:folderwide_next
 	
 :FOLDEROLD
@@ -321,9 +323,9 @@ echo       storage / pixel aspect ratio.
 		::	Done!
 		echo [92m%~n1 Done![0m
 		title FFMPEG - We did it!
-		if "%~1" == "" goto:done
 		timeout /t 2
 		shift
+		if "%~1" == "" goto:done
 		goto:folderold_next
 
 :errorUnrecognizedContainer
