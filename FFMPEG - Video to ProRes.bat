@@ -3,7 +3,12 @@
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
+::	---ADDITIONAL INFO-----------------------------------------------------------------------------
+::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-18 Version 0.4.1
+::		- Minor tweaks
 ::	2023-11-18 Version 0.4
 ::		- Added ProRes LT encoding routine
 ::		- Added VALIDATE_OUTPUT routine to check for presence of files with the same name of output
@@ -30,9 +35,6 @@ cls
 
 :next
 	title FFMPEG - Converting %~nx1 to ProRes
-	if "%~1" == "" goto:done
-	::  Fancy display of intentions :)
-    ::  font = roman from https://devops.datenkollektiv.de/banner.txt/index.html
 	echo ╔═══════════════════════════════════════════════════════════════════╗
 	echo ║  ooooooooo.                      ooooooooo.                       ║ 
 	echo ║  `888   `Y88.                    `888   `Y88.                     ║ 
@@ -46,7 +48,7 @@ cls
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
 	echo NOTE:  this script can encode ProRes only up to 10bit precision, if you need
-	echo 12bits you should use another encoder.
+	echo        12bits you should use another encoder.
 	echo.
 	echo [101;93m ENCODER SELECTION [0m
 
@@ -88,6 +90,7 @@ cls
 		echo ║   888          888  `88b.  `88b    d88'   d8'  `888b        888       ║  
 		echo ║  o888o        o888o  o888o  `Y8bood8P'  o888o  o88888o     o888o      ║  
 		echo ╚═══════════════════════════════════════════════════════════════════════╝
+		echo.
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
 		set OUTPUT_ENC=_ProResProxy
@@ -155,6 +158,7 @@ cls
 		echo ║   888       o      888                                            ║ 
 		echo ║  o888ooooood8     o888o                                           ║
 		echo ╚═══════════════════════════════════════════════════════════════════╝
+		echo.
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
 		set OUTPUT_ENC=_ProResLT
@@ -222,6 +226,7 @@ cls
 		echo ║       888   .oP     .o .oP     .o                                 ║
 		echo ║      o888o  8888888888 8888888888                                 ║
 		echo ╚═══════════════════════════════════════════════════════════════════╝
+		echo.
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
 		set OUTPUT_ENC=_ProRes422
@@ -495,7 +500,7 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo [92m              Encoding succesful. This window will close after 5 seconds.[0m
+	echo [92mEncoding succesful. This window will close after 5 seconds.[0m
 	timeout /t 1 > nul
 	cls
 	echo ╔═══════════════════════════════════════════════════════════════════╗
@@ -510,7 +515,7 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo [92m              Encoding succesful. This window will close after 4 seconds.[0m
+	echo [92mEncoding succesful. This window will close after 4 seconds.[0m
 	timeout /t 1 > nul
 	cls
 	echo ╔═══════════════════════════════════════════════════════════════════╗
@@ -525,7 +530,7 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo [92m              Encoding succesful. This window will close after 3 seconds.[0m
+	echo [92mEncoding succesful. This window will close after 3 seconds.[0m
 	timeout /t 1 > nul
 	cls
 	echo ╔═══════════════════════════════════════════════════════════════════╗
@@ -540,7 +545,7 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo [92m              Encoding succesful. This window will close after 2 seconds.[0m
+	echo [92mEncoding succesful. This window will close after 2 seconds.[0m
 	timeout /t 1 > nul
 	cls
 	echo ╔═══════════════════════════════════════════════════════════════════╗
@@ -555,7 +560,7 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo [92m              Encoding succesful. This window will close after 1 seconds.[0m
+	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
 	timeout /t 1 > nul
 	exit 0
 
@@ -576,7 +581,7 @@ cls
 	echo [33m[3][0m. Abort the operation (will be auto-selected in 10s)
 	echo.
 	
-	CHOICE /C 123 /T 10 /D 1 /M "Enter your choice:"
+	CHOICE /C 123 /T 10 /D 3 /M "Enter your choice:"
 	:: Note - list ERRORLEVELS in decreasing order
 	IF ERRORLEVEL 3 goto :abort
 	IF ERRORLEVEL 2 set OUTPUT_SFX="(2)"
