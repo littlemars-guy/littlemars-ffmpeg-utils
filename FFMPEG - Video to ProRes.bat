@@ -7,11 +7,14 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-20 Version 0.4.2
+::		- Updated VALIDATE_OUTPUT subroutine for better handling of rename function when output is
+::		already existing.
 ::	2023-11-18 Version 0.4.1
 ::		- Minor tweaks
 ::	2023-11-18 Version 0.4
-::		- Added ProRes LT encoding routine
-::		- Added VALIDATE_OUTPUT routine to check for presence of files with the same name of output
+::		- Added ProRes LT encoding subroutine
+::		- Added VALIDATE_OUTPUT subroutine to check for presence of files with the same name of output
 ::		- General formatting to provide better clarity both in reading the code and running the script
 ::	2023-11-16 Version 0.3.1
 ::		- Added "-map 0" after input to select all tracks
@@ -29,6 +32,7 @@
 ::		- Updated script description and license disclaimer
 ::		- Added changelog
 ::	-----------------------------------------------------------------------------------------------
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 @echo off
 chcp 65001
 cls
@@ -47,8 +51,8 @@ cls
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
 	echo.
-	echo NOTE:  this script can encode ProRes only up to 10bit precision, if you need
-	echo        12bits you should use another encoder.
+	echo NOTE:  this script can encode ProRes only up to 10bit precision,
+	echo		if you need 12bits you should use another encoder.
 	echo.
 	echo [101;93m ENCODER SELECTION [0m
 
@@ -64,12 +68,12 @@ cls
 	
 	CHOICE /C 12345 /M "Enter your choice:"
 	:: Note - list ERRORLEVELS in decreasing order
-	IF ERRORLEVEL 6 set choice="PR4444XQ" && GOTO:PR4444XQ
-	IF ERRORLEVEL 5 set choice="PR4444" && GOTO:PR4444
-	IF ERRORLEVEL 4 set choice="PR422HQ" && GOTO:PR422HQ
-	IF ERRORLEVEL 3 set choice="PRStandard" && GOTO:PRStandard
-	IF ERRORLEVEL 2 set choice="PRlt" && GOTO:PRlt
-	IF ERRORLEVEL 1 set choice="PRProxy" && GOTO:PRProxy
+	IF ERRORLEVEL 6 set choice="PR4444XQ" && set ProRes=[ProRes 4444XQ] && GOTO:PR4444XQ
+	IF ERRORLEVEL 5 set choice="PR4444" && set ProRes=[ProRes 4444] && GOTO:PR4444
+	IF ERRORLEVEL 4 set choice="PR422HQ" && set ProRes=[ProRes 422HQ] && GOTO:PR422HQ
+	IF ERRORLEVEL 3 set choice="PRStandard" && set ProRes=[ProRes 422] && GOTO:PRStandard
+	IF ERRORLEVEL 2 set choice="PRlt" && set ProRes={ProRes lt} && GOTO:PRlt
+	IF ERRORLEVEL 1 set choice="PRProxy" && set ProRes=[ProRes Proxy] && GOTO:PRProxy
 
 	:PRProxy
 		cls
@@ -91,14 +95,16 @@ cls
 		echo ║  o888o        o888o  o888o  `Y8bood8P'  o888o  o88888o     o888o      ║  
 		echo ╚═══════════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProResProxy
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -130,7 +136,7 @@ cls
 			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			"%~dp1%~n1_ProResProxy%OUTPUT_SFX%.mov"
+			"%~dp1%~n1-%ProRes%%OUTPUT_SFX%.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
 			set OUTPUT_SFX=""
@@ -159,14 +165,16 @@ cls
 		echo ║  o888ooooood8     o888o                                           ║
 		echo ╚═══════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProResLT
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -227,14 +235,16 @@ cls
 		echo ║      o888o  8888888888 8888888888                                 ║
 		echo ╚═══════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProRes422
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -295,14 +305,16 @@ cls
 		echo ║      o888o  8888888888 8888888888    o888o   o888o  `Y8bood8P'Ybd' ║
 		echo ╚════════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProRes422HQ
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -363,14 +375,16 @@ cls
 		echo ║      o888o      o888o      o888o      o888o                       ║
 		echo ╚═══════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProRes4444
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -401,7 +415,7 @@ cls
 			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			"%~dp1%~n1_ProRes4444%OUTPUT_SFX%.mov"
+			"%~dp1%~n1-%ProRes%%OUTPUT_SFX%.mov"
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
 			set OUTPUT_SFX=""
@@ -430,14 +444,16 @@ cls
 		echo ║      o888o      o888o      o888o      o888o     o888o  o88888o  `Y8bood8P'Ybd' ║
 		echo ╚════════════════════════════════════════════════════════════════════════════════╝
 		echo.
+		set count=2
 		set OUTPUT_DIR=%~dp1
 		set OUTPUT_NAME=%~n1
-		set OUTPUT_ENC=_ProRes4444XQ
+		set OUTPUT_SFX=
+		set OUTPUT_EXT=.mov
 		CALL :VALIDATE_OUTPUT
 		echo.
 		echo [101;93m ENCODING... [0m
 		echo Input: %~1
-		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%.mov
+		echo Output: %OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%.mov
 		echo.
 
 		::	Get codec name
@@ -468,7 +484,7 @@ cls
 			-c:a %codec_audio% ^
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
-			"%~dp1%~n1_ProRes4444XQ%OUTPUT_SFX%.mov"
+			"%~dp1%~n1-%ProRes%%OUTPUT_SFX%.mov"
 
 			if NOT ["%errorlevel%"]==["0"] goto:error
 			
@@ -478,7 +494,37 @@ cls
 			if "%~1" == "" goto:done
 			goto:PR4444XQ
 
-
+	:VALIDATE_OUTPUT
+		echo.
+		set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_EXT%"
+		echo [101;93m VALIDATING OUTPUT... [0m
+			IF EXIST %OUTPUT_FILE% (
+				echo Output [30;41m UNAVAILABLE [0m && goto:errorfile
+			) ELSE ( 
+				echo Output [30;42m AVAILABLE [0m && goto:encode_%choice%
+			)
+	:errorfile
+		set OUTPUT_SFX= (%count%)
+		set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%-%ProRes%%OUTPUT_SFX%%OUTPUT_EXT%"
+		IF EXIST %OUTPUT_FILE% (
+  	      set /A count+=1 && set OUTPUT_SFX= (%count%) && goto :errorfile
+ 	   ) ELSE ( 
+			goto :error_choice
+		)
+	:error_choice
+		echo.
+		echo [93mA file with the same name as the requested conversion output already exists.
+		echo [1mSelect the desired action:[0m
+		echo [33m[1][0m. Overwrite output (will ask again for confirmation)
+		echo [33m[2][0m. Rename output %OUTPUT_NAME%-%ProRes%[30;43m-(%count%)[0m.%OUTPUT_EXT%[0m
+		echo [33m[3][0m. Abort the operation (will be auto-selected in 30s)
+		echo.
+	
+		CHOICE /C 123 /T 30 /D 3 /M "Enter your choice:"
+		:: Note - list ERRORLEVELS in decreasing order
+		IF ERRORLEVEL 3 goto :abort
+		IF ERRORLEVEL 2 goto :encode_%choice%
+		IF ERRORLEVEL 1 EXIT /B
 
 :error
 	
@@ -563,29 +609,6 @@ cls
 	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
 	timeout /t 1 > nul
 	exit 0
-
-:VALIDATE_OUTPUT
-	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%.mov"
-	echo [101;93m VALIDATING OUTPUT... [0m
-	IF EXIST %OUTPUT_FILE% (
-    	echo Output [30;41m UNAVAILABLE [0m && goto:errorfile
- 		) ELSE ( 
-    	echo Output [30;42m AVAILABLE [0m && EXIT /B
-	)
-:errorfile
-	echo.
-	echo [93mA file with the same name as the requested conversion output already exists.
-	echo [1mSelect the desired action:[0m
-	echo [33m[1][0m. Overwrite output (will ask again for confirmation)
-	echo [33m[2][0m. Rename output %OUTPUT_NAME%%OUTPUT_ENC%[30;43m-(2)[0m.mov[0m
-	echo [33m[3][0m. Abort the operation (will be auto-selected in 10s)
-	echo.
-	
-	CHOICE /C 123 /T 10 /D 3 /M "Enter your choice:"
-	:: Note - list ERRORLEVELS in decreasing order
-	IF ERRORLEVEL 3 goto :abort
-	IF ERRORLEVEL 2 set OUTPUT_SFX="(2)"
-	IF ERRORLEVEL 1 EXIT /B
 
 :abort
 	
