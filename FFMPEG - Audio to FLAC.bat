@@ -4,6 +4,8 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-25 Version 0.4.1
+::		- Changed "choice" variable to "same_codec" for better clarity
 ::	2023-11-19 Version 0.4
 ::		- Added VALIDATE_OUTPUT subroutine
 ::		- Extended timeout for :ERROR_CHOICE from 10s to 30s
@@ -46,7 +48,7 @@ setlocal EnableDelayedExpansion
 	set codec=""
 	set bits=""
 	::	Have we already been here?
-	if /i "%choice%"=="yes" (
+	if /i "%same_codec%"=="yes" (
     	goto :VALIDATE_OUTPUT
 	) else (
 	    goto :get_codec
@@ -148,7 +150,7 @@ setlocal EnableDelayedExpansion
 	:: Note - ERRORLEVELS are listed in decreasing order
 	IF ERRORLEVEL 3 goto:abort
 	IF ERRORLEVEL 2 goto:encode
-	IF ERRORLEVEL 1 set choice=yes && goto:get_bits_per_sample
+	IF ERRORLEVEL 1 set same_codec=yes && goto:get_bits_per_sample
 
 :errorbits32
 	
