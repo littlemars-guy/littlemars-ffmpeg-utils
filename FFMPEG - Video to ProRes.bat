@@ -7,6 +7,9 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-23 Version 0.4.3
+::		- Fixed ProRes LT will now correctly add the [ProRes LT] suffix to encoded files, instead
+::		of {ProRes LT}
 ::	2023-11-20 Version 0.4.2
 ::		- Updated VALIDATE_OUTPUT subroutine for better handling of rename function when output is
 ::		already existing.
@@ -72,7 +75,7 @@ cls
 	IF ERRORLEVEL 5 set choice="PR4444" && set ProRes=[ProRes 4444] && GOTO:PR4444
 	IF ERRORLEVEL 4 set choice="PR422HQ" && set ProRes=[ProRes 422HQ] && GOTO:PR422HQ
 	IF ERRORLEVEL 3 set choice="PRStandard" && set ProRes=[ProRes 422] && GOTO:PRStandard
-	IF ERRORLEVEL 2 set choice="PRlt" && set ProRes={ProRes lt} && GOTO:PRlt
+	IF ERRORLEVEL 2 set choice="PRlt" && set ProRes=[ProRes lt] && GOTO:PRlt
 	IF ERRORLEVEL 1 set choice="PRProxy" && set ProRes=[ProRes Proxy] && GOTO:PRProxy
 
 	:PRProxy
