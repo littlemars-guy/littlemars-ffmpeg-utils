@@ -4,6 +4,9 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-29 Version 0.4
+::		- Added VALIDATE_AUDIO subroutine to check audio for compatibility with .mp4 container
+::		- Minor formatting
 ::	2023-11-20 Version 0.3
 ::		- Added VALIDATE_OUTPUT subroutine
 ::		- Extended timeout for :ERROR_CHOICE from 10s to 30s
@@ -14,7 +17,7 @@
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
-
+::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 @echo off
 chcp 65001
 cls
@@ -23,11 +26,10 @@ cls
 	title FFMPEG - Converting "%~1" to 20mbps h264 video with 320kbps AAC audio
 
     :: Check if output file already exists
-    :: Check if output file already exists
 	set count=2
 	set OUTPUT_DIR=%~dp1
 	set OUTPUT_NAME=%~n1
-	set OUTPUT_ENC=-h264-20mbps-AAC320k
+	set OUTPUT_ENC=-h264-20mbps
 	set OUTPUT_SFX=
 	set OUTPUT_EXT=.mp4
 	
@@ -38,8 +40,21 @@ cls
 			IF EXIST %OUTPUT_FILE% (
 				echo Output [30;41m UNAVAILABLE [0m && goto:errorfile
 			) ELSE ( 
-				echo Output [30;42m AVAILABLE [0m && goto:encode
+				echo Output [30;42m AVAILABLE [0m && goto:VALIDATE_AUDIO
 			)
+
+	:VALIDATE_AUDIO
+		::	Get codec name
+        setlocal EnableDelayedExpansion
+        for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "codec=%%I"
+
+		if /i "%codec:~11%"=="wma" (
+    		echo Audio codec [30;41m %codec:~11% [0m is incompatible, will be converted to aac && set codec_audio=aac -b:a 320
+		) else (
+		    echo Audio codec [30;42m %codec:~11% [0m is compatible, audio will be copied && set codec_audio=copy
+		)
+	goto:encode
+
 	:errorfile
 		set OUTPUT_SFX= (%count%)
 		set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_ENC%%OUTPUT_SFX%%OUTPUT_EXT%"
@@ -48,6 +63,7 @@ cls
  	   ) ELSE ( 
 			goto :error_choice
 		)
+
 	:error_choice
 		echo.
 		echo [93mA file with the same name as the requested conversion output already exists.
@@ -87,12 +103,11 @@ cls
     	    -profile:v high ^
 		    -level 4.1 ^
 			-pix_fmt yuv420p ^
-			-c:a aac ^
-    	    -b:a 320k ^
+			-c:a %codec_audio% ^
     	    -map_metadata 0 ^
 			-movflags use_metadata_tags ^
     	    -movflags +faststart ^
-			"%~dp1%~n1-h264-20mbps-AAC320k%OUTPUT_SFX%.mp4"
+			"%~dp1%~n1-h264-20mbps%OUTPUT_SFX%.mp4"
 	
 	set OUTPUT_SFX=""
 
