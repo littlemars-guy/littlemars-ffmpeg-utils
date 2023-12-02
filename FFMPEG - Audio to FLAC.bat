@@ -3,6 +3,9 @@
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
+::	---ADDITIONAL INFO-----------------------------------------------------------------------------
+::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-11-25 Version 0.4.1
 ::		- Changed "choice" variable to "same_codec" for better clarity
