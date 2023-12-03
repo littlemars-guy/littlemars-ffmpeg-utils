@@ -7,6 +7,8 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-03 Version 0.5.1
+::		- Fixed bug with the VALIDATE_AUDIO routine
 ::	2023-11-29 Version 0.5
 ::		- Added banners
 ::		- Reworked code for identification of audio codec compatibility
@@ -23,9 +25,9 @@
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 
-@echo off
+::@echo off
 chcp 65001
 setlocal EnableDelayedExpansion
 cls
@@ -92,7 +94,7 @@ cls
 		CHOICE /C 123 /T 30 /D 3 /M "Enter your choice:"
 		:: Note - list ERRORLEVELS in decreasing order
 		IF ERRORLEVEL 3 goto :abort
-		IF ERRORLEVEL 2 goto :encode
+		IF ERRORLEVEL 2 goto :VALIDATE_AUDIO
 		IF ERRORLEVEL 1 EXIT /B
 
 	:encode
