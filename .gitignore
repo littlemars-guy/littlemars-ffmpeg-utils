@@ -9,3 +9,5 @@ SendToBK/desktop.ini
 FFMPEG - TEST.bat
 x264_lookahead.clbin
 TEST.bat
+.megaignore
+FFMPEG - NEW.bat
