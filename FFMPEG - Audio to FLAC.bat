@@ -1,5 +1,4 @@
 ::	This script will extract audio from source and save it as a new FLAC file
-::
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
@@ -7,6 +6,11 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-14 Version 0.5
+::		- Full rewrite of multi-file input management
+::		- Rewrote error and abort subroutines
+::	2023-12-04 Version 0.4.2
+::		- Minor formatting
 ::	2023-11-25 Version 0.4.1
 ::		- Changed "choice" variable to "same_codec" for better clarity
 ::	2023-11-19 Version 0.4
@@ -20,36 +24,41 @@
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::
+::	---Debug Utils (will be removed in future releases---------------------------------------------
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::	-----------------------------------------------------------------------------------------------
 @echo off
 chcp 65001
-cls
 setlocal EnableDelayedExpansion
+cls
+
+set file_count=0
 
 :again
+	set /A file_count+=1
+	if NOT DEFINED jump goto :next
+
+:jump
+	timeout /t 2 > nul
+    shift
+    if "%~1" == "" goto :done
+
+:next
+	set jump=yes
+	set file=%~1
+	set codec=
+	set bits=
 	set OUTPUT_DIR=%~dp1
 	set OUTPUT_NAME=%~n1
-	set %OUTPUT_SFX%=""
+	set %OUTPUT_SFX%=
 	set count=2
+	cls
 	title FFMPEG - Extracting audio from "%~1" to flac
 	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL :banner
 
 :analisys
-	set file=%~1
-	::	Reset variables before analisys
-	set codec=""
-	set bits=""
 	::	Have we already been here?
 	if /i "%same_codec%"=="yes" (
     	goto :VALIDATE_OUTPUT
@@ -83,9 +92,9 @@ setlocal EnableDelayedExpansion
 	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%.flac"
 	echo [101;93m VALIDATING OUTPUT... [0m
 		IF EXIST %OUTPUT_FILE% (
-   			echo Output [30;41m UNAVAILABLE [0m && goto:errorfile
+   			echo Output [30;41m UNAVAILABLE [0m && goto :errorfile
  		) ELSE ( 
-    		echo Output [30;42m AVAILABLE [0m && goto:encode
+    		echo Output [30;42m AVAILABLE [0m && goto :encode
 		)
 :errorfile
 	set OUTPUT_SFX= (%count%)
@@ -129,229 +138,74 @@ setlocal EnableDelayedExpansion
 		-write_id3v2 1 ^
 		"%~dp1%~n1%OUTPUT_SFX%.flac"
 	
-	if NOT ["%errorlevel%"]==["0"] goto:error
-	echo [92m%~n1 Done![0m
-	title FFMPEG - Extraction of audio from "%~1" completed!
-	goto:next
+	if NOT ["%errorlevel%"]==["0"] set print_error_level=%errorlevel% && goto :error	
 
-:next
-	shift
-	if "%~1" == "" goto:end
-	goto:again
+	echo [92m%~n1 Done![0m
+	goto :again
 
 :error_already_flac
 	
-	echo [93mThere was an error. The input file audio track is already encoded in FLAC.[0m
+	echo [93mThere was an error. Looks like the input file audio track is already encoded in FLAC.[0m
 	echo [93mDo you want to extract it to a separate file?[0m
 
 	echo [33m[1][0m. yes (save option for subsequent files in queue)
-	echo [33m[2][0m. yes (just once)
+	echo [33m[2][0m. yes (just this time)
 	echo [33m[3][0m. no
 	echo.
 
 	CHOICE /t 10 /C 123 /D 1 /M "Enter your choice:"
 	:: Note - ERRORLEVELS are listed in decreasing order
-	IF ERRORLEVEL 3 goto:abort
-	IF ERRORLEVEL 2 goto:encode
-	IF ERRORLEVEL 1 set same_codec=yes && goto:get_bits_per_sample
+	IF ERRORLEVEL 3 goto :abort
+	IF ERRORLEVEL 2 goto :encode
+	IF ERRORLEVEL 1 set same_codec=yes && goto :get_bits_per_sample
 
 :errorbits32
-	
 	echo [93mThere was an error. The input file audio codec has a bit depth of 32 bits and thus is incompatible with the FLAC encoder.[0m
 	pause
 	exit 0
 
 :error
-	
 	echo [93mThere was an error. Please check your input file.[0m
+	echo Errorlevel is %print_error_level%
 	pause
-	exit 0
+	goto :eof
 
 :abort
-	
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 5 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 4 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 3 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 2 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 1 seconds.[0m
-	timeout /t 1 > nul
-	exit 0
+	set countdown=5
+	CALL :abort_cycle
+	:abort_cycle
+		cls
+		CALL :banner
+		echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo.
+		echo [93mProcess aborted.[0m
+		set /A countdown-=1
+		timeout /t 1 > nul
+		if "%countdown%"=="0" exit 0
+		goto :abort_cycle
 
+:done
+	set countdown=5
+	CALL :end_cycle
+	:end_cycle
+		cls
+		CALL :banner
+		echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo.
+		echo [92mEncoding succesful. This window will close after %countdown% seconds.[0m
+		set /A countdown-=1
+		timeout /t 1 > nul
+		if "%countdown%"=="0" exit 0
+		goto :end_cycle
 
-:end
-	
-	cls
-	echo.[0m
+:banner
 	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
+	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║
 	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
+	echo ║   888          888             .8"888.     888          ║
+	echo ║   888oooo8     888            .8' `888.    888          ║
+	echo ║   888    "     888           .88ooo8888.   888          ║
+	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║
+	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║
 	echo ╚═════════════════════════════════════════════════════════╝
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 5 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 4 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 3 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 2 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═════════════════════════════════════════════════════════╗
-	echo ║  oooooooooooo ooooo              .o.         .oooooo.   ║  
-	echo ║  `888'     `8 `888'             .888.       d8P'  `Y8b  ║
-	echo ║   888          888             .8"888.     888          ║ 
-	echo ║   888oooo8     888            .8' `888.    888          ║  
-	echo ║   888    "     888           .88ooo8888.   888          ║ 
-	echo ║   888          888       o  .8'     `888.  `88b    ooo  ║  
-	echo ║  o888o        o888ooooood8 o88o     o8888o  `Y8bood8P'  ║  
-	echo ╚═════════════════════════════════════════════════════════╝
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
-	timeout /t 1 > nul
-	exit 0
+	exit /B
