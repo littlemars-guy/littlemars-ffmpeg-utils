@@ -7,6 +7,8 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-14 Version 0.3.1
+::		- Instead of exit /b, error subroutines now call goto:eof
 ::	2023-12-14 Version 0.3
 ::		- Added TS musxer
 ::		- Added AVI muxer
@@ -476,7 +478,7 @@ if NOT DEFINED jump goto:next
 		echo [92mEncoding succesful. This window will close after %countdown% seconds.[0m
 		set /A countdown-=1
 		timeout /t 1 > nul
-		if "%countdown%"=="0" exit 0
+		if "%countdown%"=="0" goto:eof
 		goto:end_cycle
 
 :abort
@@ -489,7 +491,7 @@ if NOT DEFINED jump goto:next
 		echo [93mProcess aborted.[0m
 		set /A countdown-=1
 		timeout /t 1 > nul
-		if "%countdown%"=="0" exit 0
+		if "%countdown%"=="0" goto:eof
 		goto:abort_cycle
 
 :banner
