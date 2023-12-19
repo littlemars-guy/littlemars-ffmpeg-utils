@@ -1,5 +1,10 @@
 # littlemars' FFMPEG utils
 
+🚧 **Work in Progress - This Project is Under Development** 🚧
+
+**Note: This repository is currently in active development and is not considered stable. Use at your own risk.**
+
+
 ## About the Project
 This GitHub repository contains a collection of Batch scripts designed to simplify and expedite video and audio conversion using FFMPEG on Windows. The scripts are intended to be conveniently placed in the "SendTo" folder, allowing users to quickly convert multimedia files to various presets with just a right-click.
 
