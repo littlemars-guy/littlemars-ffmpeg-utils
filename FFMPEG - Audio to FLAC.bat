@@ -6,6 +6,8 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-19 Version 0.5.1
+::		- Minor formatting
 ::	2023-12-14 Version 0.5
 ::		- Full rewrite of multi-file input management
 ::		- Rewrote error and abort subroutines
@@ -28,7 +30,7 @@
 ::	---Debug Utils (will be removed in future releases---------------------------------------------
 ::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	-----------------------------------------------------------------------------------------------
-@echo off
+::@echo off
 chcp 65001
 setlocal EnableDelayedExpansion
 cls
@@ -45,18 +47,22 @@ set file_count=0
     if "%~1" == "" goto :done
 
 :next
-	set jump=yes
 	set file=%~1
 	set codec=
 	set bits=
 	set OUTPUT_DIR=%~dp1
 	set OUTPUT_NAME=%~n1
+	set OUTPUT_EXT=.flac
 	set %OUTPUT_SFX%=
 	set count=2
+	CALL :make_log
+	set jump=yes
 	cls
 	title FFMPEG - Extracting audio from "%~1" to flac
 	echo.[0m
 	CALL :banner
+
+	CALL :make_log
 
 :analisys
 	::	Have we already been here?
@@ -89,7 +95,7 @@ set file_count=0
 
 :VALIDATE_OUTPUT
 	echo.
-	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%.flac"
+	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_EXT%"
 	echo [101;93m VALIDATING OUTPUT... [0m
 		IF EXIST %OUTPUT_FILE% (
    			echo Output [30;41m UNAVAILABLE [0m && goto :errorfile
@@ -98,7 +104,7 @@ set file_count=0
 		)
 :errorfile
 	set OUTPUT_SFX= (%count%)
-	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_SFX%.flac"
+	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_SFX%%OUTPUT_EXT%"
 	IF EXIST %OUTPUT_FILE% (
         set /A count+=1 && set OUTPUT_SFX= (%count%) && goto :errorfile
     ) ELSE ( 
@@ -109,7 +115,7 @@ set file_count=0
 	echo [93mA file with the same name as the requested conversion output already exists.
 	echo [1mSelect the desired action:[0m
 	echo [33m[1][0m. Overwrite output (will ask again for confirmation)
-	echo [33m[2][0m. Rename output %OUTPUT_NAME%[30;43m-(%count%)[0m.flac[0m
+	echo [33m[2][0m. Rename output %OUTPUT_NAME%[30;43m-(%count%)[0m%OUTPUT_EXT%[0m
 	echo [33m[3][0m. Abort the operation (will be auto-selected in 30s)
 	echo.
 	
@@ -124,6 +130,9 @@ set file_count=0
 	echo.
 	echo.
 	echo [101;93m ENCODING... [0m
+	echo File #%file_count%
+	echo Input: %~nx1
+	echo Output: %OUTPUT_NAME%%OUTPUT_SFX%%OUTPUT_EXT%
 	echo.
 	ffmpeg ^
 		-hide_banner ^
@@ -133,11 +142,14 @@ set file_count=0
 		-map 0:a ^
 		-vn ^
 		-c:a flac ^
-		-compression_level 12 -exact_rice_parameters 1 ^
+		-compression_level 12 ^
+		-exact_rice_parameters 1 ^
 		-map_metadata 0 ^
 		-write_id3v2 1 ^
-		"%~dp1%~n1%OUTPUT_SFX%.flac"
+		"%~dp1%~n1%OUTPUT_SFX%%OUTPUT_EXT%"
 	
+	CALL :log
+
 	if NOT ["%errorlevel%"]==["0"] set print_error_level=%errorlevel% && goto :error	
 
 	echo [92m%~n1 Done![0m
@@ -167,8 +179,9 @@ set file_count=0
 :error
 	echo [93mThere was an error. Please check your input file.[0m
 	echo Errorlevel is %print_error_level%
+	if EXIST %~dp1%~n1%OUTPUT_SFX%%OUTPUT_EXT% del %~dp1%~n1%OUTPUT_SFX%%OUTPUT_EXT%
 	pause
-	goto :eof
+	exit /B
 
 :abort
 	set countdown=5
@@ -195,6 +208,25 @@ set file_count=0
 		timeout /t 1 > nul
 		if "%countdown%"=="0" exit 0
 		goto :end_cycle
+
+:make_log
+	if DEFINED jump exit /B
+	for /f "tokens=1-4 delims=/ " %%i in ("%date%") do (
+    	set dow=%%h
+    	set month=%%i
+    	set day=%%j
+    	set year=%%k
+		)
+	SET datestr=%month%_%day%_%year%
+	SET log_file=%OUTPUT_DIR%flac_log-%datestr%.log
+
+	echo ENCODED FILES: >> %log_file%
+	echo. >> %log_file%
+	exit /B
+
+:log
+	echo %OUTPUT_FILE% >> %log_file%
+	exit /B
 
 :banner
 	echo ╔═════════════════════════════════════════════════════════╗
