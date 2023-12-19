@@ -3,7 +3,12 @@
 ::	---LICENSE-------------------------------------------------------------------------------------
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
+::	---ADDITIONAL INFO-----------------------------------------------------------------------------
+::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-06 Version 0.3.3
+::		- Moved banners to :banner and :info subroutines
 ::	2023-11-18 Version 0.3.2
 ::		- Fixed next file check happening before shift
 ::	2023-11-16 Version 0.3.1
@@ -18,28 +23,11 @@
 echo off
 chcp 65001
 cls
-echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║
-echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-echo ║                                                                                                                  ║
-echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║
-echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+CALL:banner
 echo.
-echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
-echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
-echo       storage / pixel aspect ratio.
+CALL:info
+echo.
+CALL:info
 ::	User input
 	echo.
 	echo [37mBut first you have to specify the desired output aspect ratio:[0m
@@ -96,28 +84,9 @@ echo       storage / pixel aspect ratio.
 		if exist "%~1-wide%~x1" goto:errorfile
 		::	Let's go!
 		cls
-		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-		echo ║                                                                                                                  ║
-		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+		CALL:banner
 		echo.
-		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
-		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
-		echo       storage / pixel aspect ratio.
+		CALL:info
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -158,28 +127,9 @@ echo       storage / pixel aspect ratio.
 		if exist "%~1-wide%~x1" goto:errorfile
 		::	Let's go!
 		cls
-		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-		echo ║                                                                                                                  ║
-		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+		CALL:banner
 		echo.
-		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
-		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
-		echo       storage / pixel aspect ratio.
+		CALL:info
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -219,28 +169,9 @@ echo       storage / pixel aspect ratio.
 		if exist "%~dp1%folder_wide%%~n1-wide%~x1" goto:errorfile
 	::	Let's go!
 		cls
-		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-		echo ║                                                                                                                  ║
-		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+		CALL:banner
 		echo.
-		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
-		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
-		echo       storage / pixel aspect ratio.
+		CALL:info
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -280,28 +211,9 @@ echo       storage / pixel aspect ratio.
 		if exist "%~1-wide%~x1" goto:errorfile
 	::	Let's go!
 		cls
-		echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-		echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-		echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-		echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-		echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-		echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-		echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-		echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-		echo ║                                                                                                                  ║
-		echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-		echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-		echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-		echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-		echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-		echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-		echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-		echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-		echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+		CALL:banner
 		echo.
-		echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
-		echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
-		echo       storage / pixel aspect ratio.
+		CALL:info
 		echo.
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
@@ -387,99 +299,38 @@ echo       storage / pixel aspect ratio.
 
 :done
 	cls
-	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-	echo ║                                                                                                                  ║
-	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL:banner
 	echo.
 	echo [92mEncoding succesful. This window will close after 5 seconds.[0m
 	timeout /t 1 > nul
 	cls
-	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-	echo ║                                                                                                                  ║
-	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL:banner
 	echo.
 	echo [92mEncoding succesful. This window will close after 4 seconds.[0m
 	timeout /t 1 > nul
 	cls
-	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-	echo ║                                                                                                                  ║
-	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL:banner
 	echo.
 	echo [92mEncoding succesful. This window will close after 3 seconds.[0m
 	timeout /t 1 > nul
 	cls
-	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
-	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
-	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
-	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
-	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
-	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
-	echo ║                                                                                                                  ║
-	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
-	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
-	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
-	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
-	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
-	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
-	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL:banner
 	echo.
 	echo [92mEncoding succesful. This window will close after 2 seconds.[0m
 	timeout /t 1 > nul
 	cls
+	CALL:banner
+	echo.
+	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
+	timeout /t 1 > nul
+	exit 0
+
+:banner
 	echo ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 	echo ║  ooooo ooooooooooooo o8o  .oooooo..o      .oooooo.      .oooooo.   ooooo      ooo ooooo      ooo       .o.       ║
 	echo ║  `888' 8'   888   `8 `YP d8P'    `Y8     d8P'  `Y8b    d8P'  `Y8b  `888b.     `8' `888b.     `8'      .888.      ║
 	echo ║   888       888       '  Y88bo.         888           888      888  8 `88b.    8   8 `88b.    8      .8"888.     ║
-	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║	
+	echo ║   888       888           `"Y8888o.     888           888      888  8   `88b.  8   8   `88b.  8     .8' `888.    ║
 	echo ║   888       888               `"Y88b    888     ooooo 888      888  8     `88b.8   8     `88b.8    .88ooo8888.   ║
 	echo ║   888       888          oo     .d8P    `88.    .88'  `88b    d88'  8       `888   8       `888   .8'     `888.  ║
 	echo ║  o888o     o888o         8""88888P'      `Y8bood8P'    `Y8bood8P'  o8o        `8  o8o        `8  o88o     o8888o ║
@@ -487,13 +338,16 @@ echo       storage / pixel aspect ratio.
 	echo ║  oooooooooo.  oooooooooooo    oooooo   oooooo     oooo ooooo ooooo ooooo ooooo ooooo oooooooooo.   oooooooooooo  ║
 	echo ║  `888'   `Y8b `888'     `8     `888.    `888.     .8'  `888' `888' `888' `888' `888' `888'   `Y8b  `888'     `8  ║
 	echo ║   888     888  888              `888.   .8888.   .8'    888   888   888   888   888   888      888  888          ║
-	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║	
+	echo ║   888oooo888'  888oooo8          `888  .8'`888. .8'     888   888   888   888   888   888      888  888oooo8     ║
 	echo ║   888    `88b  888    "           `888.8'  `888.8'      888   888   888   888   888   888      888  888    "     ║
 	echo ║   888    .88P  888       o         `888'    `888'       888   888   888   888   888   888     d88'  888       o  ║
 	echo ║  o888bood8P'  o888ooooood8          `8'      `8'       o888o o888o o888o o888o o888o o888bood8P'   o888ooooood8  ║
 	echo ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 	echo              - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
-	timeout /t 1 > nul
-	exit 0
+	exit /B
+
+:info
+	echo NOTE: This script will only change the display aspet ratio info in metadata, it will not re-encode the input. Some
+	echo       software (such as premiere pro) might not recognize these  metadata and will display the video based off its
+	echo       storage / pixel aspect ratio.
+	exit /B
