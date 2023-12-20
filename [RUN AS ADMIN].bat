@@ -16,7 +16,6 @@
 ::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	-----------------------------------------------------------------------------------------------
 
-
 @echo off
 chcp 65001
 cls
@@ -39,6 +38,7 @@ REM  Check if FFMPEG is already installed
 where ffmpeg >nul 2>nul
 if %errorlevel% equ 0 (
     echo FFMPEG is already installed. Skipping installation.
+    echo.
     goto :SkipInstallation
 )
 
@@ -54,8 +54,10 @@ if not exist "%FFMPEG_PATH_FOLDER%\ffmpeg.exe" (
     echo FFmpeg is not installed. Downloading and extracting...
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%FFMPEG_URL%', 'ffmpeg.zip'); Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('ffmpeg.zip', '%FFMPEG_INSTALL_FOLDER%'); Remove-Item 'ffmpeg.zip'"
     echo FFmpeg installed successfully.
+    echo.
 ) else (
     echo FFmpeg is already installed.
+    echo.
 )
 
 REM Add FFmpeg folder to the PATH variable
@@ -63,17 +65,19 @@ setx PATH "%PATH%;%FFMPEG_PATH_FOLDER%" /M
 
 :SkipInstallation
 
-REM Remove previous scripts installation to free space for update
-RD /S /Q "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main"
-
 REM Remove existing shortcuts in the SendTo folder that link to downloaded scripts
 for %%i in ("%SENDTO_FOLDER%\*.lnk") do (
-    set "TARGET_SCRIPT=!LITTLEMARS_INSTALL_FOLDER!\littlemars-ffmpeg-utils-main\%%~nxi"
+    set "TARGET_SCRIPT=!LITTLEMARS_INSTALL_FOLDER!\littlemars-ffmpeg-utils-main\%%~ni.bat"
     if exist "!TARGET_SCRIPT!" (
         del "%%i"
-        echo Removed existing shortcut: %%i
+        echo Removed existing shortcut: %%~ni
     )
 )
+
+echo.
+
+REM Remove previous scripts installation to free space for update
+if EXIST "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main" RD /S /Q "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main"
 
 REM Download and extract the littlemars-ffmpeg-utils ZIP file
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%LITTLEMARS_REPO_URL%', 'littlemars.zip'); Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('littlemars.zip', '%LITTLEMARS_INSTALL_FOLDER%'); Remove-Item 'littlemars.zip'"
@@ -82,19 +86,22 @@ REM Remove unnecessary files
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitignore"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitattributes"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\LICENSE"
+del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\[RUN AS ADMIN].bat"
 
 REM Iterate through each script in the littlemars-ffmpeg-utils installation folder
 for %%i in ("%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\*.bat") do (
     REM Create a shortcut for each script in the SendTo folder
     set "SCRIPT_NAME=%%~nxi"
     set "SHORTCUT_NAME=!SCRIPT_NAME:.bat=.lnk!"
+    set "SHORTCUT_PRINT_NAME=%%~ni"
     set "SHORTCUT_PATH=!SENDTO_FOLDER!\!SHORTCUT_NAME!"
 
     powershell -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut('!SHORTCUT_PATH!'); $s.TargetPath='!LITTLEMARS_INSTALL_FOLDER!\littlemars-ffmpeg-utils-main\!SCRIPT_NAME!'; $s.Save()"
 
-    echo Created shortcut: !SHORTCUT_PATH!
+    echo Created shortcut: !SHORTCUT_PRINT_NAME!
 )
 
+echo.
 echo Installation completed!
 echo For usage guide and tips refer to the readme.md file in the script directory
 echo or go to github.com/littlemars-guy/littlemars-ffmpeg-utils
