@@ -37,7 +37,7 @@ This GitHub repository contains a collection of Batch scripts designed to simpli
 - [ ] Customizable Presets: Easily customize and extend the existing presets or add new ones according to specific conversion requirements.
 - [ ] Error Handling: Incorporates error-handling mechanisms to gracefully manage unexpected scenarios during the conversion process.
 - [ ] New scripts
-    - [ ] Nested Feature
+    - [ ] Coming soon...
 
 
 ## Contribution:
