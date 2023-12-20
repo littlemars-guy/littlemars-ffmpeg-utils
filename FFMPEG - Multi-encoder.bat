@@ -4,7 +4,9 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---ADDITIONAL INFO-----------------------------------------------------------------------------
-::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::  More info abot this project: https://github.com/littlemars-guy/littlemars-ffmpeg-utils
+::
+::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-12-02 Version 0.2
@@ -28,7 +30,7 @@ cls
     echo.
     echo [101;93m CODECS [0m
 	echo. && echo.
-    ::
+    
     echo [1mAvailable codecs:[0m
     echo [33m[1][0m. h264 (x264, NVENC)
 	echo [33m[2][0m. h265 (x265, NVENC)
@@ -37,9 +39,9 @@ cls
 	echo [33m[5][0m. FFV1
     echo [33m[6][0m. Low UNI presets
 	echo.
-	::
+	
     CHOICE /C 123456 /M "Enter your choice:"
-    :: Note - list ERRORLEVELS in decreasing order
+    REM Note - list ERRORLEVELS in decreasing order
     IF ERRORLEVEL 6 GOTO:set_UNI
     IF ERRORLEVEL 5 GOTO:set_FFV1
     IF ERRORLEVEL 4 GOTO:set_ProRes
@@ -177,7 +179,7 @@ cls
   	set count=2
   	set OUTPUT_DIR=%~dp1
    	set OUTPUT_NAME=%~n1
-    set preset=NVENCh264_20M-AAC256k
+    set preset=NVENCh264_20M
   	set OUTPUT_SFX=
     set OUTPUT_EXT=.mp4
   	CALL :VALIDATE_OUTPUT

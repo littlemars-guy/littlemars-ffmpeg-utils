@@ -1,3 +1,22 @@
+::	This script will install the littlemars' FFMPEG utils suite
+::
+::	---LICENSE-------------------------------------------------------------------------------------
+::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+::
+::	---ADDITIONAL INFO-----------------------------------------------------------------------------
+::  More info abot this project: https://github.com/littlemars-guy/littlemars-ffmpeg-utils
+::
+::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
+::
+::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-11-19 Version 0.1
+::		- Initial release
+::
+::	---Debug Utils (will be removed in future releases---------------------------------------------
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::	-----------------------------------------------------------------------------------------------
+
+
 @echo off
 chcp 65001
 cls
@@ -76,8 +95,30 @@ for %%i in ("%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\*.bat") do
     echo Created shortcut: !SHORTCUT_PATH!
 )
 
-echo Installation completed
+echo Installation completed!
 echo For usage guide and tips refer to the readme.md file in the script directory
 echo or go to github.com/littlemars-guy/littlemars-ffmpeg-utils
+echo.
+echo Press any key to exit
+pause > nul
+exit 0
 
-pause
+:banner
+	echo ╔════════════════════════════════════════════════════════════════════╗
+	echo ║  ooooooooo.                                                        ║
+	echo ║  `888   `Y88.                                                      ║
+	echo ║   888   .d88'  .ooooo.  ooo. .oo.  .oo.   oooo  oooo  oooo    ooo  ║
+	echo ║   888ooo88P'  d88' `88b `888P"Y88bP"Y88b  `888  `888   `88b..8P'   ║
+	echo ║   888`88b.    888ooo888  888   888   888   888   888     Y888'     ║
+	echo ║   888  `88b.  888    .o  888   888   888   888   888   .o8"'88b    ║
+	echo ║  o888o  o888o `Y8bod8P' o888o o888o o888o  `V88V"V8P' o88'   888o  ║
+	echo ╚════════════════════════════════════════════════════════════════════╝
+	echo.
+    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	exit /B
+
+:info
+	echo NOTE: 	Work in Progress - This Project is under active development
+	echo 		This repository is currently in active development and is 
+	echo 		not considered stable. Use at your own risk.
+	EXIT /B

@@ -25,7 +25,9 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---ADDITIONAL INFO-----------------------------------------------------------------------------
-::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::  More info abot this project: https://github.com/littlemars-guy/littlemars-ffmpeg-utils
+::
+::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-12-13 Version 0.1
