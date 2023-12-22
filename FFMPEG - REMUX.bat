@@ -7,6 +7,8 @@
 ::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-22 Version 0.3.2
+::		- Fixed error in :done and :abort routines that created an endless loop
 ::	2023-12-14 Version 0.3.1
 ::		- Instead of exit /b, error subroutines now call goto:eof
 ::	2023-12-14 Version 0.3
@@ -480,7 +482,7 @@ if NOT DEFINED jump goto:next
 		echo [92mEncoding succesful. This window will close after %countdown% seconds.[0m
 		set /A countdown-=1
 		timeout /t 1 > nul
-		if "%countdown%"=="0" goto:eof
+		if "%countdown%"=="0" exit 0
 		goto:end_cycle
 
 :abort
@@ -493,7 +495,7 @@ if NOT DEFINED jump goto:next
 		echo [93mProcess aborted.[0m
 		set /A countdown-=1
 		timeout /t 1 > nul
-		if "%countdown%"=="0" goto:eof
+		if "%countdown%"=="0" exit 0
 		goto:abort_cycle
 
 :banner
@@ -515,6 +517,3 @@ if NOT DEFINED jump goto:next
 	echo 		This script prioritizes preserving untouched video tracks.
 	echo 		If input video codec mismatches output container, the operation aborts.
 	EXIT /B
-
-:eof
-exit 0
