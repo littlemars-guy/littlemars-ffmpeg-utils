@@ -15,9 +15,9 @@
 ::		- Initial release -- [based on Audio to FLAC v0.4] --
 ::
 ::	---Debug Utils (will be removed in future releases---------------------------------------------
-::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	-----------------------------------------------------------------------------------------------
-@echo off
+::@echo off
 chcp 65001
 setlocal EnableDelayedExpansion
 cls
