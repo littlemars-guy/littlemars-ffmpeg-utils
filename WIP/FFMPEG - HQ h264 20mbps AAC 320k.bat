@@ -4,7 +4,9 @@
 ::	What follows is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 ::
 ::	---ADDITIONAL INFO-----------------------------------------------------------------------------
-::  Fancy font is "roman" from https://devops.datenkollektiv.de/banner.txt/index.html
+::  More info abot this project: https://github.com/littlemars-guy/littlemars-ffmpeg-utils
+::
+::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
 ::	2023-12-03 Version 0.5.1
@@ -25,14 +27,15 @@
 ::		Updated script description and license disclaimer
 ::		Added changelog
 ::	-----------------------------------------------------------------------------------------------
-if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 
-::@echo off
+@echo off
 chcp 65001
 setlocal EnableDelayedExpansion
 cls
 
 :again
+	cls
 	title FFMPEG - Converting "%~1" to 20mbps h264 video with 320kbps AAC audio
 	echo ╔═════════════════════════════════════════════════════════════════════════════════════════╗
 	echo ║ oooo          .oooo.       .ooo         .o         .oooo.     .oooo.   ooo        ooooo ║
@@ -52,9 +55,9 @@ cls
 	set count=2
 	set OUTPUT_DIR=%~dp1
 	set OUTPUT_NAME=%~n1
-	set OUTPUT_ENC=-h264-20mbps
+	set OUTPUT_ENC=-h264_20mbps
 	set OUTPUT_SFX=
-	set OUTPUT_EXT=.mkv
+	set OUTPUT_EXT=.mp4
 
 	:VALIDATE_OUTPUT
 		echo.
@@ -101,13 +104,10 @@ cls
 		echo.
 		echo [101;93m ENCODING... [0m
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
+			-hide_banner -loglevel warning -stats ^
     	    -hwaccel auto ^
 			-i "%~1" ^
-			-map 0:a ^
-    	    -map 0:v:0 ^
+			-map 0:a -map 0:v:0 ^
 			-c:v libx264 -x264opts opencl ^
     	    -crf 18 -maxrate 20M -bufsize 40M ^
     	    -preset slow ^
@@ -116,8 +116,7 @@ cls
 		    -level 4.1 ^
 			-pix_fmt yuv420p ^
 			-c:a %codec_audio% ^
-    	    -map_metadata 0 ^
-			-movflags use_metadata_tags ^
+    	    -map_metadata 0 -movflags use_metadata_tags ^
     	    -movflags +faststart ^
 			"%~dp1%~n1%OUTPUT_ENC%%OUTPUT_SFX%%OUTPUT_EXT%"
 	
@@ -130,6 +129,7 @@ cls
 	if "%~1" == "" goto:done
 	timeout /t 3 > nul
 	goto:next
+
 ::	DUAL PASS (DEPRECATED, lines will be removed in the future)
 	::	ffmpeg ^
 	::		-hwaccel auto ^
