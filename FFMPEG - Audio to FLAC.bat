@@ -8,6 +8,8 @@
 ::	Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-22 Version 0.5.2
+::		- Deactivated Log functions
 ::	2023-12-19 Version 0.5.1
 ::		- Minor formatting
 ::	2023-12-14 Version 0.5
@@ -24,9 +26,9 @@
 ::	2023-11-16 Version 0.3
 ::		- Added "-map 0:a" after input to select all audio tracks
 ::	2023-11-10 Version 0.2
-::		Minor formatting
-::		Updated script description and license disclaimer
-::		Added changelog
+::		- Minor formatting
+::		- Updated script description and license disclaimer
+::		- Added changelog
 ::	-----------------------------------------------------------------------------------------------
 ::
 ::	---Debug Utils (will be removed in future releases---------------------------------------------
@@ -57,14 +59,14 @@ set file_count=0
 	set OUTPUT_EXT=.flac
 	set %OUTPUT_SFX%=
 	set count=2
-	CALL :make_log
+	::CALL :make_log
 	set jump=yes
 	cls
 	title FFMPEG - Extracting audio from "%~1" to flac
 	echo.[0m
 	CALL :banner
 
-	CALL :make_log
+	::CALL :make_log
 
 :analisys
 	::	Have we already been here?
@@ -150,7 +152,7 @@ set file_count=0
 		-write_id3v2 1 ^
 		"%~dp1%~n1%OUTPUT_SFX%%OUTPUT_EXT%"
 	
-	CALL :log
+	::CALL :log
 
 	if NOT ["%errorlevel%"]==["0"] set print_error_level=%errorlevel% && goto :error	
 
@@ -211,7 +213,7 @@ set file_count=0
 		if "%countdown%"=="0" exit 0
 		goto :end_cycle
 
-:make_log
+::	:make_log
 	if DEFINED jump exit /B
 	for /f "tokens=1-4 delims=/ " %%i in ("%date%") do (
     	set dow=%%h
@@ -226,7 +228,7 @@ set file_count=0
 	echo. >> %log_file%
 	exit /B
 
-:log
+::	:log
 	echo %OUTPUT_FILE% >> %log_file%
 	exit /B
 
