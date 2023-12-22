@@ -102,7 +102,7 @@ set file_count=0
 			-i "%~1" ^
 			-map 0:a -map 0:v:0 ^
 			-vf "scale=-2:min'(1080,ih)'" ^
-			-c:v libsvtav1 -preset 13 -svtav1-params tune=0:keyint=10s:scd=1:lookahead=120 ^
+			-c:v libsvtav1 -preset 5 -svtav1-params tune=0:keyint=10s:scd=1:lookahead=120 ^
     	    -crf 51 ^
 			-pix_fmt yuv420p ^
 			-c:a libopus -b:a 128k -application audio -apply_phase_inv 1 -cutoff 0 ^
