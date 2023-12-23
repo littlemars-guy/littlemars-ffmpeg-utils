@@ -91,10 +91,8 @@ setlocal EnableDelayedExpansion
 	:fast
 		echo [101;93m ENCODING PASS 1 ... [0m
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-hwaccel auto ^
-			-stats -i "%~1" ^
+			-hide_banner -loglevel warning -hwaccel auto -stats ^
+			-i "%~1" ^
 			-map 0 ^
             -filter:v "scale=480x640" ^
 			-aspect 16:9 ^
