@@ -9,11 +9,16 @@
 ::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2023-12-23 Version 0.1.1
+::		- Rewrote error and abort subroutines
 ::	2023-11-23 Version 0.1
 ::		- Initial release
 ::	-----------------------------------------------------------------------------------------------
-if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
-::@echo off
+::
+::	---Debug Utils (will be removed in future releases---------------------------------------------
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
+::	-----------------------------------------------------------------------------------------------
+@echo off
 chcp 65001
 cls
 setlocal EnableDelayedExpansion
@@ -21,22 +26,10 @@ setlocal EnableDelayedExpansion
 	set file=%~1
 	set OUTPUT_DIR=%~dp1
 	set OUTPUT_NAME=%~n1
-	set %OUTPUT_SFX%=""
+	set OUTPUT_SFX=
 	set OUTPUT_EXT=mkv
 	set count=2
-	title FFMPEG - Extracting audio from %file% to opus
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
+	CALL :banner
 	echo.
 	IF DEFINED choice (goto:analisys) ELSE (goto:preset_selection)
 
@@ -222,7 +215,7 @@ setlocal EnableDelayedExpansion
 			-map 0 ^
             -filter:v "scale=trunc(oh*a/2)*2:min(720\,iw)" ^
 			-c:v libsvtav1 ^
-			-preset 5 ^
+			-preset 6 ^
 			-svtav1-params tune=0:keyint=10s:scd=1:lookahead=120 ^
 			-crf 51 ^
 			-pix_fmt yuv420p ^
@@ -275,190 +268,41 @@ setlocal EnableDelayedExpansion
 	exit 0
 
 :abort
-	
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 5 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 4 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 3 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 2 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [30;41mProcess aborted.[0m
-	echo.
-	echo [93mThis window will close after 1 seconds.[0m
-	timeout /t 1 > nul
-	exit 0
+	set countdown=5
+	CALL :abort_cycle
+	:abort_cycle
+		cls
+		CALL :banner
+		echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo.
+		echo [93mProcess aborted.[0m
+		set /A countdown-=1
+		timeout /t 1 > nul
+		if "%countdown%"=="0" exit 0
+		goto :abort_cycle
 
+:done
+	set countdown=5
+	CALL :end_cycle
+	:end_cycle
+		cls
+		CALL :banner
+		echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo. && echo.
+		echo [92mEncoding succesful. This window will close after %countdown% seconds.[0m
+		set /A countdown-=1
+		timeout /t 1 > nul
+		if "%countdown%"=="0" exit 0
+		goto :end_cycle
 
-:end
-	
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
+:banner
+	echo [0m╔══════════════════════════════════════╗
+	echo ║  ooooo     ooo ooooo      ooo ooooo  ║
+	echo ║  `888'     `8' `888b.     `8' `888'  ║
+	echo ║   888       8   8 `88b.    8   888   ║
+	echo ║   888       8   8   `88b.  8   888   ║
+	echo ║   888       8   8     `88b.8   888   ║
+	echo ║   `88.    .8'   8       `888   888   ║
+	echo ║     `YbodP'    o8o        `8  o888o  ║
+	echo ╚══════════════════════════════════════╝
 	echo.
     echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 5 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 4 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 3 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 2 seconds.[0m
-	timeout /t 1 > nul
-	cls
-	echo.[0m
-	echo ╔═══════════════════════════════════════════════════════╗
-	echo ║    .oooooo.   ooooooooo.   ooooo     ooo  .oooooo..o  ║
-	echo ║   d8P'  `Y8b  `888   `Y88. `888'     `8' d8P'    `Y8  ║
-	echo ║  888      888  888   .d88'  888       8  Y88bo.       ║
-	echo ║  888      888  888ooo88P'   888       8   `"Y8888o.   ║
-	echo ║  888      888  888          888       8       `"Y88b  ║
-	echo ║  `88b    d88'  888          `88.    .8'  oo     .d8P  ║
-	echo ║   `Y8bood8P'  o888o           `YbodP'    8""88888P'   ║
-	echo ╚═══════════════════════════════════════════════════════╝ 
-	echo.
-    echo - This script is distributed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 -
-	echo.
-	echo.
-	echo [92mEncoding succesful. This window will close after 1 seconds.[0m
-	timeout /t 1 > nul
-	exit 0
+	exit /b 0
