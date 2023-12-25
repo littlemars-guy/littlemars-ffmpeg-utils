@@ -33,7 +33,7 @@ This GitHub repository contains a collection of Batch scripts designed to simpli
 5) Sit back and let the script handle the conversion process using FFMPEG.
 
 ## Roadmap
-
+- [ ] Output (file size / remaining space on device) check for ProRes and REMUX scripts
 - [ ] Customizable Presets: Easily customize and extend the existing presets or add new ones according to specific conversion requirements.
 - [ ] Error Handling: Incorporates error-handling mechanisms to gracefully manage unexpected scenarios during the conversion process.
 - [ ] New scripts
