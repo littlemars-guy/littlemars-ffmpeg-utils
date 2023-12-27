@@ -72,7 +72,7 @@ echo [92mFFmpeg installed successfully.[0m
 
 REM Remove existing shortcuts in the SendTo folder that link to downloaded scripts
 for %%i in ("%SENDTO_FOLDER%\*.lnk") do (
-    set "TARGET_SCRIPT=!LITTLEMARS_INSTALL_FOLDER!\littlemars-ffmpeg-utils-main\%%~ni.bat"
+    set "TARGET_SCRIPT=!LITTLEMARS_INSTALL_FOLDER!\littlemars-ffmpeg-utils-main\Scripts\%%~ni.bat"
     if exist "!TARGET_SCRIPT!" (
         del "%%i"
         echo [92mRemoved existing shortcut:[0m %%~ni
@@ -92,9 +92,10 @@ del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitignore"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitattributes"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\LICENSE"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\[INSTALLER].bat"
+RD /S /Q "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\WIP
 
 REM Iterate through each script in the littlemars-ffmpeg-utils installation folder
-for %%i in ("%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\*.bat") do (
+for %%i in ("%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\Scripts\*.bat") do (
     REM Create a shortcut for each script in the SendTo folder
     set "SCRIPT_NAME=%%~nxi"
     set "SHORTCUT_NAME=!SCRIPT_NAME:.bat=.lnk!"
