@@ -6,7 +6,7 @@
 
 
 ## About the Project
-This GitHub repository contains a collection of Batch scripts designed to simplify and expedite video and audio conversion using FFMPEG on Windows. The scripts are intended to be conveniently placed in the "SendTo" folder, allowing users to quickly convert multimedia files to various presets with just a right-click.
+This GitHub repository contains a collection of Batch scripts designed to simplify and expedite video and audio conversion using FFMPEG on Windows. The scripts are intended to be accessed from the "SendTo" menu, allowing users to quickly convert multimedia files to various presets with just a right-click.
 
 ## Features:
 
@@ -14,9 +14,9 @@ This GitHub repository contains a collection of Batch scripts designed to simpli
 
 **Versatile Conversion Options**: Users can effortlessly convert both video and audio files to a variety of preset formats, optimizing files for different devices and use cases.
 
-**Batch Processing**: The scripts are equipped to handle batch processing, allowing users to convert multiple files simultaneously with a single command.
+**Batch Processing**: All the scripts are capable of handling batch processing, allowing users to convert multiple files simultaneously with a single command.
 
-**Just FFMPEG**: Leverages the power of FFMPEG for robust and high-quality multimedia conversion, ensuring compatibility with a wide range of formats. No other software required.
+**Just FFMPEG**: Leverages the power of FFMPEG for robust and high-quality multimedia conversion, ensuring compatibility with a wide range of formats. No other software required outside of FFMPEG and a Windows system.
 
 
 
@@ -25,6 +25,7 @@ There are two methods for installation:
 ### Automatic installation
 _Using the provided install script_
 - Download the provided install script
+- Place it in the folder where you want the scrips to be installed
 - Run it as Administrator
 - Profit!
 
@@ -34,8 +35,8 @@ _Using the provided install script_
 
 ## Usage
 - Right-click on the file(s) you want to convert, navigate to the "SendTo" menu, and select the appropriate script.
-- Follow the on-screen prompts to choose the desired conversion preset.
-- Sit back and let the script handle the conversion process using FFMPEG.
+- Follow the on-screen prompt and choose the desired conversion preset.
+- Sit back and let the script handle the conversion process.
 
 
 ## Roadmap
