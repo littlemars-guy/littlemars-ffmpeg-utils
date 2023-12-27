@@ -20,17 +20,23 @@ This GitHub repository contains a collection of Batch scripts designed to simpli
 
 
 
-## Usage:
+## Installation
+There are two methods for installation:
+### Automatic installation
+_Using the provided install script_
+- Download the provided install script
+- Run it as Administrator
+- Profit!
 
-1) Clone or download the repository to your local machine.
+### Manual installation
+- Clone or download the repository to your local machine.
+- Copy the desired Batch script(s) to or create links for them in the "SendTo" folder on your Windows system.
 
-2) Copy the desired Batch script(s) to the "SendTo" folder on your Windows system.
+## Usage
+- Right-click on the file(s) you want to convert, navigate to the "SendTo" menu, and select the appropriate script.
+- Follow the on-screen prompts to choose the desired conversion preset.
+- Sit back and let the script handle the conversion process using FFMPEG.
 
-3) Right-click on the file(s) you want to convert, navigate to the "SendTo" menu, and select the appropriate script.
-
-4) Follow the on-screen prompts to choose the desired conversion preset.
-
-5) Sit back and let the script handle the conversion process using FFMPEG.
 
 ## Roadmap
 - [ ] Output (file size / remaining space on device) check for ProRes and REMUX scripts
