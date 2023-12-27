@@ -21,14 +21,6 @@ chcp 65001
 cls
 setlocal enabledelayedexpansion
 
-echo.
-CALL :banner
-echo.
-CALL :info
-echo.
-echo.
-CALL :check_your_privileges
-
 REM Set the repository URL for littlemars-ffmpeg-utils
 set LITTLEMARS_REPO_URL=https://github.com/littlemars-guy/littlemars-ffmpeg-utils/archive/main.zip
 
@@ -38,6 +30,14 @@ echo [92mInstallation folder:[0m %LITTLEMARS_INSTALL_FOLDER%
 
 REM Set the SendTo folder
 set "SENDTO_FOLDER=%APPDATA%\Microsoft\Windows\SendTo"
+
+echo.
+CALL :banner
+echo.
+CALL :info
+echo.
+echo.
+CALL :check_your_privileges
 
 REM  Check if FFMPEG is already installed
 where ffmpeg >nul 2>nul
@@ -91,7 +91,7 @@ REM Remove unnecessary files
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitignore"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\.gitattributes"
 del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\LICENSE"
-del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\[RUN AS ADMIN].bat"
+del "%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\[INSTALLER].bat"
 
 REM Iterate through each script in the littlemars-ffmpeg-utils installation folder
 for %%i in ("%LITTLEMARS_INSTALL_FOLDER%\littlemars-ffmpeg-utils-main\*.bat") do (
@@ -152,6 +152,12 @@ exit 0
 	echo 	This repository is currently in active development and is 
 	echo 	not considered stable. Use at your own risk.
     echo.
-    echo [92mPress any key to continue.[0m
+    echo The scripts will be installed to:
+    echo [0m!LITTLEMARS_INSTALL_FOLDER![92m
+    echo.
+    echo If this is not your desired destination, close this window, move the
+    echo installer to the preferred destination and launch from there.
+    echo.
+    echo [92mIf you are sure and want to proceed, press any key to continue.[0m
 	pause > nul
 	EXIT /B
