@@ -383,7 +383,7 @@ if NOT DEFINED jump goto:next
 	:flac
 		::	Get audio bits per sample
 		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=bits_per_raw_sample -of default^=noprint_wrappers^=1 "%file%"') do set "bits_per_raw_sample=%%I"
-		set bits=%bits_per_raw_sample:~20%%
+		set bits=%bits_per_raw_sample:~20%
 		set codec_audio="pcm_s%bits%le"
 		echo Audio codec [30;41m %codec:~11% [0m is incompatible, will be converted to uncompressed PCM_s%bits%le
 		echo MIND THAT flac IS compatible with MP4 
