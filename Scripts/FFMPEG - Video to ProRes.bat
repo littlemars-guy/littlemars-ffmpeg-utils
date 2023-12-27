@@ -120,8 +120,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
 
 		:encode_PRProxy 
 		ffmpeg ^
@@ -189,8 +189,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
 
 		:encode_PRlt
 		ffmpeg ^
@@ -257,8 +257,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
         
 		:encode_PRStandard
 		ffmpeg ^
@@ -325,8 +325,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
         
 		:encode_PR422HQ
 		ffmpeg ^
@@ -393,8 +393,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
         
 		:encode_PR4444
 		ffmpeg ^
@@ -461,8 +461,8 @@ cls
 		goto:encode_%choice%
 
 		::	Get bits per sample
-		:bits_per_sample
-		for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
+		::bits_per_sample
+		::for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams a:0 -show_entries stream^=codec_name -of default^=noprint_wrappers^=1 "%~1"') do set "bits=%%I"
         
 		:encode_PR4444XQ
 		ffmpeg ^
