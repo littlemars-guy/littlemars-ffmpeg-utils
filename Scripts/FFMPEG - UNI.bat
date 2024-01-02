@@ -9,6 +9,8 @@
 ::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2024-01-02 Version 0.1.2
+::		- Fixed typo
 ::	2023-12-23 Version 0.1.1
 ::		- Rewrote error and abort subroutines
 ::	2023-11-23 Version 0.1
@@ -111,7 +113,7 @@ setlocal EnableDelayedExpansion
 			-map_metadata 0 ^
 			-movflags use_metadata_tags ^
 			-movflags +faststart ^
-			-pass 1 -f %OUTPUT_EXT ^
+			-pass 1 -f %OUTPUT_EXT% ^
 			NUL
 
 		echo [92mPASS 1 completed successfully, moving on to PASS 2[0m
