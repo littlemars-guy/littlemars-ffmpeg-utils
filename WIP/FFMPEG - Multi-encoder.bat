@@ -208,7 +208,7 @@ set file_count=0
             -c:v libx264 -x264opts opencl ^
             -crf 22 ^
             -preset medium -tune film ^
-            -profile:v high -%level%% ^
+            -profile:v high -%level% ^
             -pix_fmt yuv420p ^
             -c:a %codec_audio% ^
             -map_metadata 0 ^
