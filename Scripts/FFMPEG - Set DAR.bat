@@ -9,6 +9,8 @@
 ::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2024-01-03 Version 0.4
+::		- Various improvement to output file name handling
 ::	2023-12-06 Version 0.3.3
 ::		- Moved banners to :banner and :info subroutines
 ::	2023-11-18 Version 0.3.2
@@ -20,16 +22,18 @@
 ::		General clean up
 ::	2023-11-10 Version 0.2
 ::		Added basic presets and prompt to input custom A/R
+::
+::	---Debug Utils (will be removed in future releases---------------------------------------------
+  if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	-----------------------------------------------------------------------------------------------
 
 echo off
+setlocal EnableDelayedExpansion
 chcp 65001
 cls
-CALL:banner
+CALL :banner
 echo.
-CALL:info
-echo.
-CALL:info
+CALL :info
 ::	User input
 	echo.
 	echo [37mBut first you have to specify the desired output aspect ratio:[0m
@@ -57,11 +61,13 @@ CALL:info
 	goto:manage_origin
 
 	:manage_origin
+	set "aspect_sfx=[!aspect_ratio:/=-!]"
+
 	echo [37mOne last thing, I need you to specify what to do with the originals:[0m
 	echo.
 	echo [33m[1][0m. Overwrite originals. BEWARE! DELETED FILES WON'T BE RECOVERABLE VIA RECYCLE BIN
 	echo [33m[2][0m. Keep both, the new files will have the "-wide" suffix
-	echo [33m[3][0m. Write new ones in a folder named "-wide"
+	echo [33m[3][0m. Write new ones in a folder named "_%aspect_sfx%"
 	echo [33m[4][0m. Move originals to a new folder named "-old"
 	echo.
 	
@@ -78,12 +84,10 @@ CALL:info
 	goto:overwrite_next
 
 	:overwrite_next
-		::	Placing title
-		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
+		set input_ext=%~x1
+
 		if "%~1" == "" goto:done
-		::	Check if output file already exists	
-		if exist "%~1-wide%~x1" goto:errorfile
 		::	Let's go!
 		cls
 		CALL:banner
@@ -93,25 +97,18 @@ CALL:info
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-			-i "%~1" ^
-			-map 0 ^
+			-hide_banner -loglevel warning -stats ^
+			-i "%input%" -map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
-			-map_metadata 0 ^
-			-movflags use_metadata_tags ^
-			"%~dp1%~n1-wide%~x1"
+			-map_metadata 0 -movflags use_metadata_tags ^
+			"%~dp1%~n1_%aspect_sfx%.%input_ext%"
 
-		if NOT ["%errorlevel%"]==["0"] goto:error
+		if NOT ["%errorlevel%"]==["0"] && goto:error
 		::delete original
-		setlocal EnableDelayedExpansion
-		DEL "%input%""
-		endlocal
+		DEL "%input%"
 		:: Done!
 		echo [92m%~n1 Done![0m
-		title FFMPEG - We did it!
 		timeout /t 2
 		shift
 		if "%~1" == "" goto:done
@@ -121,12 +118,8 @@ CALL:info
 	goto:keepboth_next
 
 	:keepboth_next
-		::	Placing title
-		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
 		if "%~1" == "" goto:done
-		::	Check if output file already exists	
-		if exist "%~1-wide%~x1" goto:errorfile
 		::	Let's go!
 		cls
 		CALL:banner
@@ -136,21 +129,16 @@ CALL:info
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-			-i "%~1" ^
-			-map 0 ^
+			-hide_banner -loglevel warning -stats ^
+			-i "%~1" -map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
-			-map_metadata 0 ^
-			-movflags use_metadata_tags ^
-			"%~dp1%~n1-wide%~x1"
+			-map_metadata 0 -movflags use_metadata_tags ^
+			"%~dp1%~n1-%aspect_sfx%%~x1"
 
 		if NOT ["%errorlevel%"]==["0"] goto:error
 		:: Done!
 		echo [92m%~n1 Done![0m
-		title FFMPEG - We did it!
 		timeout /t 2
 		shift
 		if "%~1" == "" goto:done
@@ -160,15 +148,13 @@ CALL:info
 	goto:folderwide_next
 
 	:folderwide_next
-	::	Placing title
-		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
 		if "%~1" == "" goto:done
 	::	Check if output folder already exists, create if missing
-		set folder_wide=_wide
+		set folder_wide=_%aspect_sfx%
 		if not exist "%~dp1%folder_wide%"  mkdir "%~dp1%folder_wide%"
 	::	Check if output file already exists	
-		if exist "%~dp1%folder_wide%%~n1-wide%~x1" goto:errorfile
+		if exist "%~dp1%folder_wide%%~n1_%aspect_sfx%%~x1" goto:errorfile
 	::	Let's go!
 		cls
 		CALL:banner
@@ -178,21 +164,16 @@ CALL:info
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-			-i "%~1" ^
-			-map 0 ^
+			-hide_banner -loglevel warning -stats ^
+			-i "%~1" -map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
-			-map_metadata 0 ^
-			-movflags use_metadata_tags ^
-			"%~dp1%folder_wide%/%~n1-wide%~x1"
+			-map_metadata 0 -movflags use_metadata_tags ^
+			"%~dp1%folder_wide%/%~n1_%aspect_sfx%%~x1"
 
 		if NOT ["%errorlevel%"]==["0"] goto:error
 		:: Done!
 		echo [92m%~n1 Done![0m
-		title FFMPEG - We did it!
 		timeout /t 2
 		shift
 		if "%~1" == "" goto:done
@@ -203,14 +184,13 @@ CALL:info
 
 	:folderold_next
 	::	Placing title
-		title FFMPEG - Adapting DAR of %~nx1 to 16:9
 		set input=%~1
 		if "%~1" == "" goto:done
 	::	Check if output folder already exists, create if missing
 		set folder_old=_old
 		if not exist "%~dp1%folder_old%"  mkdir "%~dp1%folder_old%"
 	::	Check if output file already exists	
-		if exist "%~1-wide%~x1" goto:errorfile
+		if exist "%~dp1%~n1_%aspect_sfx%%~x1" goto:errorfile
 	::	Let's go!
 		cls
 		CALL:banner
@@ -220,23 +200,18 @@ CALL:info
 		echo [101;93m CONVERTING TO %aspect_ratio%... [0m
 		echo.
 		ffmpeg ^
-			-hide_banner ^
-			-loglevel warning ^
-			-stats ^
-			-i "%~1" ^
-			-map 0 ^
+			-hide_banner -loglevel warning -stats ^
+			-i "%~1" -map 0 ^
 			-c copy ^
 			-aspect %aspect_ratio% ^
-			-map_metadata 0 ^
-			-movflags use_metadata_tags ^
-			"%~dp1%~n1-wide%~x1"
+			-map_metadata 0 -movflags use_metadata_tags ^
+			"%~dp1%~n1-%aspect_sfx%%~x1"
 
 		if NOT ["%errorlevel%"]==["0"] goto:error
 		::	Move original to -old folder
 		move "%~1" "%~dp1%folder_old%"
 		::	Done!
 		echo [92m%~n1 Done![0m
-		title FFMPEG - We did it!
 		timeout /t 2
 		shift
 		if "%~1" == "" goto:done
