@@ -72,7 +72,7 @@ set CURRENT=0
 	::CALL :make_log
 	set jump=yes
 	cls
-	title FFMPEG - Extracting audio from "%~1" to flac
+	title FFMPEG - [%CURRENT%/%COUNTER%] Extracting audio from "%~1" to flac
 
 :analisys
 	REM Set the target drive letter
