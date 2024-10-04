@@ -8,6 +8,10 @@
 ::	Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2024-10-04 Version 0.7
+::		- Added routines to check available disk space versus projected file size
+::	2024-03-16 Version 0.6
+::		- Added COUNTER function to display the queue lenght in the titlebar
 ::	2023-12-22 Version 0.5.2
 ::		- Deactivated Log functions
 ::	2023-12-19 Version 0.5.1
@@ -39,10 +43,16 @@ chcp 65001
 setlocal EnableDelayedExpansion
 cls
 
-set file_count=0
+:: COUNT INPUTS
+set COUNTER=0
+for %%f in (%*) do (
+	set /A COUNTER+=1
+)
+set CURRENT=0
+:: END COUNT
 
 :again
-	set /A file_count+=1
+	set /A CURRENT+=1
 	if NOT DEFINED jump goto :next
 
 :jump
@@ -63,12 +73,55 @@ set file_count=0
 	set jump=yes
 	cls
 	title FFMPEG - Extracting audio from "%~1" to flac
-	echo.[0m
-	CALL :banner
-
-	::CALL :make_log
 
 :analisys
+	REM Set the target drive letter
+	set TargetDrive=%~d1
+
+	wmic logicaldisk where "DeviceID='%TargetDrive%'" get freespace
+	set count=0 
+	for /F "delims=" %%a in ('wmic logicaldisk where "DeviceID='%TargetDrive%'" get freespace') do ( 
+	set freediskspace=%%a 
+	set /a count=!count! + 1 
+	if !count! GTR 1 goto :freespace
+	) 
+	:freespace
+	echo wsh.echo cdbl(%freediskspace%)/1024 > %temp%.\tmp.vbs 
+	for /f %%a in ('cscript //nologo %temp%.\tmp.vbs') do set freediskspace=%%a 
+	del %temp%.\tmp.vbs
+	cls
+	echo.[0m
+	CALL :banner
+	echo.[0m
+	echo [7m Queue [%CURRENT%/%COUNTER%] [0m
+	echo.[0m
+	echo Evaluating disk space requirements...
+	::  Get duration
+    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries format^=duration -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "duration=%%I"
+    ::  Truncate duration
+    for /f "tokens=1 delims=." %%i in ("!duration!") do set duration_truncated=%%i
+
+	set "output_folder=%temp%/frame_temp"
+	if EXIST %output_folder% RD /S /Q "!output_folder!"
+	mkdir "!output_folder!"
+
+	if %duration_truncated% GEQ "10" ffmpeg -hide_banner -loglevel error -i "%~1" -hide_banner -t 10 -c:a flac -compression_level 12 -exact_rice_parameters 1 -map_metadata 0 -write_id3v2 1 %output_folder%/temp.flac
+
+	REM Calculate size of sample
+	for /f "usebackq delims=" %%a in (`powershell -command "& {Get-ChildItem '%output_folder%' -Recurse | Measure-Object -Property Length -Sum | Select-Object -ExpandProperty Sum}"`) do (
+    set "temp_sample_size=%%a"
+	)
+
+	RD /S /Q "!output_folder!"
+
+	rem Convert bytes to kilobytes and round upwards
+	set /a "temp_sample_size/=1024"
+	set /a "projected_file_size=%temp_sample_size%*%duration_truncated%"
+	set /a "projected_file_size/=1024"
+	set /a "projected_file_size+=1024"
+
+	set /a "freediskspace/=1024"
+
 	::	Have we already been here?
 	if /i "%same_codec%"=="yes" (
     	goto :VALIDATE_OUTPUT
@@ -98,9 +151,23 @@ set file_count=0
 	)
 
 :VALIDATE_OUTPUT
+	cls
+	CALL :banner
 	echo.
 	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_EXT%"
 	echo [101;93m VALIDATING OUTPUT... [0m
+	echo [0mProjected file size: [30;107m %projected_file_size% MB [0m
+
+	if %freediskspace% LEQ %projected_file_size% (
+		echo [0mFree disk space: [30;41m %freediskspace% MB [0m is not enough to host output
+		timeout /t 10
+		goto :abort
+	)
+
+	if %freediskspace% GTR %projected_file_size% (
+		echo [0mFree disk space: [30;42m %freediskspace% MB [0m
+	)
+
 		IF EXIST %OUTPUT_FILE% (
    			echo Output [30;41m UNAVAILABLE [0m && goto :errorfile
  		) ELSE ( 
@@ -127,14 +194,15 @@ set file_count=0
 	:: Note - list ERRORLEVELS in decreasing order
 	IF ERRORLEVEL 3 goto :abort
 	IF ERRORLEVEL 2 goto :encode
-	IF ERRORLEVEL 1 EXIT /B
+	IF ERRORLEVEL 1 set "OUTPUT_SFX=" && goto :encode
 
 :encode
 	echo.
 	echo.
 	echo.
+	title "FFMPEG - Converting [%CURRENT%/%COUNTER%] - %~nx1 to FLAC"
 	echo [101;93m ENCODING... [0m
-	echo File #%file_count%
+	echo Computing [%CURRENT%/%COUNTER%]
 	echo Input: %~nx1
 	echo Output: %OUTPUT_NAME%%OUTPUT_SFX%%OUTPUT_EXT%
 	echo.
