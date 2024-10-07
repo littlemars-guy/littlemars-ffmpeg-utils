@@ -8,6 +8,9 @@
 ::	Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2024-10-07 Version 0.7.1
+::		- Fixed formula for projected file size estimation. Previously it would
+::		give a value 10x the correct one
 ::	2024-10-04 Version 0.7
 ::		- Added routines to check available disk space versus projected file size
 ::	2024-03-16 Version 0.6
