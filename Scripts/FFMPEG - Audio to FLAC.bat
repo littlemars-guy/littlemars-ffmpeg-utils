@@ -95,33 +95,7 @@ set CURRENT=0
 	echo.[0m
 	echo [7m Queue [%CURRENT%/%COUNTER%] [0m
 	echo.[0m
-	echo Evaluating disk space requirements...
-	::  Get duration
-    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries format^=duration -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "duration=%%I"
-    ::  Truncate duration
-    for /f "tokens=1 delims=." %%i in ("!duration!") do set duration_truncated=%%i
-
-	set "output_folder=%temp%/frame_temp"
-	if EXIST %output_folder% RD /S /Q "!output_folder!"
-	mkdir "!output_folder!"
-
-	if %duration_truncated% GEQ "10" ffmpeg -hide_banner -loglevel error -i "%~1" -hide_banner -t 10 -c:a flac -compression_level 12 -exact_rice_parameters 1 -map_metadata 0 -write_id3v2 1 %output_folder%/temp.flac
-
-	REM Calculate size of sample
-	for /f "usebackq delims=" %%a in (`powershell -command "& {Get-ChildItem '%output_folder%' -Recurse | Measure-Object -Property Length -Sum | Select-Object -ExpandProperty Sum}"`) do (
-    set "temp_sample_size=%%a"
-	)
-
-	RD /S /Q "!output_folder!"
-
-	rem Convert bytes to kilobytes and round upwards
-	set /a "temp_sample_size/=1024"
-	set /a "projected_file_size=%temp_sample_size%*%duration_truncated%"
-	set /a "projected_file_size/=1024"
-	set /a "projected_file_size+=1024"
-
-	set /a "freediskspace/=1024"
-
+	
 	::	Have we already been here?
 	if /i "%same_codec%"=="yes" (
     	goto :VALIDATE_OUTPUT
@@ -130,10 +104,10 @@ set CURRENT=0
 	)
 
 	:get_codec
-		set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1 "%file%""
+		set "ffprobe=ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "%file%""
 		for /F "delims=" %%I in ('!ffprobe!') do set "codec=%%I"
 
-	if /i "%codec:~6%"=="FLAC" (
+	if /i "%codec%"=="flac" (
 	    goto :error_already_flac
 	) else (
 	    goto :VALIDATE_OUTPUT
@@ -154,9 +128,43 @@ set CURRENT=0
 	cls
 	CALL :banner
 	echo.
+	echo Evaluating disk space requirements...
+	echo This can take some time.
+	::  Get duration
+    for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries format^=duration -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "duration=%%I"
+    ::  Truncate duration
+    for /f "tokens=1 delims=." %%i in ("!duration!") do set duration_truncated=%%i
+
+	set "output_folder=%temp%/frame_temp"
+	if EXIST %output_folder% RD /S /Q "!output_folder!"
+	mkdir "!output_folder!"
+
+	if %duration_truncated% LEQ "30" goto:output_validation_text
+
+	if %duration_truncated% GEQ "30" ffmpeg -hide_banner -loglevel error -i "%~1" -hide_banner -t 30 -c:a flac -compression_level 12 -exact_rice_parameters 1 -map_metadata 0 -write_id3v2 1 %output_folder%/temp.flac
+
+	REM Calculate size of sample
+	for /f "usebackq delims=" %%a in (`powershell -command "& {Get-ChildItem '%output_folder%' -Recurse | Measure-Object -Property Length -Sum | Select-Object -ExpandProperty Sum}"`) do (
+    set "temp_sample_size=%%a"
+	)
+
+	RD /S /Q "!output_folder!"
+
+	rem Convert bytes to kilobytes and round upwards
+	set /a "size_per_second=%temp_sample_size%/30"
+	set /a "projected_file_size=%size_per_second%*%duration_truncated%"
+	set /a "projected_file_size/=1024"
+	set /a "projected_file_size/=1024"
+	set percent=15
+	set /a "additional=%projected_file_size%*%percent%/100"
+	set /a "projected_file_size=%projected_file_size%+%additional%"
+
+	set /a "freediskspace/=1024"
+	set /a "freediskspace-=1024"
+
 	set OUTPUT_FILE="%OUTPUT_DIR%%OUTPUT_NAME%%OUTPUT_EXT%"
 	echo [101;93m VALIDATING OUTPUT... [0m
-	echo [0mProjected file size: [30;107m %projected_file_size% MB [0m
+	echo [0mProjected file size: [30;107m ca. %projected_file_size% MB [0m (BEWARE: actual size may vary.)
 
 	if %freediskspace% LEQ %projected_file_size% (
 		echo [0mFree disk space: [30;41m %freediskspace% MB [0m is not enough to host output
@@ -168,6 +176,7 @@ set CURRENT=0
 		echo [0mFree disk space: [30;42m %freediskspace% MB [0m
 	)
 
+	:output_validation_text
 		IF EXIST %OUTPUT_FILE% (
    			echo Output [30;41m UNAVAILABLE [0m && goto :errorfile
  		) ELSE ( 
@@ -202,9 +211,10 @@ set CURRENT=0
 	echo.
 	title "FFMPEG - Converting [%CURRENT%/%COUNTER%] - %~nx1 to FLAC"
 	echo [101;93m ENCODING... [0m
-	echo Computing [%CURRENT%/%COUNTER%]
+	echo [7m Computing [%CURRENT%/%COUNTER%] [0m
 	echo Input: %~nx1
 	echo Output: %OUTPUT_NAME%%OUTPUT_SFX%%OUTPUT_EXT%
+	echo Duration: %duration_truncated%s
 	echo.
 	ffmpeg ^
 		-hide_banner ^
@@ -228,7 +238,6 @@ set CURRENT=0
 	goto :again
 
 :error_already_flac
-	
 	echo [93mThere was an error. Looks like the input file audio track is already encoded in FLAC.[0m
 	echo [93mDo you want to extract it to a separate file?[0m
 
@@ -237,7 +246,7 @@ set CURRENT=0
 	echo [33m[3][0m. no
 	echo.
 
-	CHOICE /t 10 /C 123 /D 1 /M "Enter your choice:"
+	CHOICE /C 123 /M "Enter your choice:"
 	:: Note - ERRORLEVELS are listed in decreasing order
 	IF ERRORLEVEL 3 goto :abort
 	IF ERRORLEVEL 2 goto :encode
