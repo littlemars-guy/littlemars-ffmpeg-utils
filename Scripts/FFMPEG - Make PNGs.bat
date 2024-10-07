@@ -1,4 +1,3 @@
-::if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	This script will extract the frames of selected videos to an image sequence
 ::
 ::	---LICENSE-------------------------------------------------------------------------------------
@@ -10,36 +9,50 @@
 ::  Fancy font is "roman" from: https://devops.datenkollektiv.de/banner.txt/index.html
 ::
 ::	---CHANGELOG-----------------------------------------------------------------------------------
+::	2024-10-07 Version 0.5.1
+::		- More accurate projected file size estimation
+::	2024-03-15 Version 0.5
+::		- Fixed bugs when calculating projected_file_size
 ::	2023-12-19 Version 0.4
-::		Added functin to estimate output file size and abort operation if exceeding free disk space
-::		Minor formatting
+::		- Added functin to estimate output file size and abort operation if exceeding free disk space
+::		- Minor formatting
 ::	2023-11-16 Version 0.3.1
-::		Fixed error in calculation of video duration
+::		- Fixed error in calculation of video duration
 ::	2023-11-13 Version 0.3
-::		New method to count frames: multiplying duration by fps. This boosts speed of calculation
+::		- New method to count frames: multiplying duration by fps. This boosts speed of calculation
 ::		instead of using -sount_frames function of FFPROBE
-::      New banner
+::      - New banner
 ::	2023-11-10 Version 0.2
-::		Minor formatting	
-::		Updated script description and license disclaimer
-::		Added changelog
+::		- Minor formatting	
+::		- Updated script description and license disclaimer
+::		- Added changelog
+::
+::	---Debug Utils (will be removed in future releases---------------------------------------------
+::	if not defined in_subprocess (cmd /k set in_subprocess=y ^& %0 %*) & exit )
 ::	-----------------------------------------------------------------------------------------------
+@echo off
 chcp 65001
 setlocal EnableDelayedExpansion
-@echo off
+
+:: COUNT INPUTS
+set COUNTER=0
+for %%f in (%*) do (
+	set /A COUNTER+=1
+)
+set CURRENT=0
+:: END COUNT
 
 :next
 	set count=2
 	set input_file=%~1
     cls
-    ::	IF NO MORE FILES ARE LEFT IN THE QUEUE GO TO DONE WARNING
+    REM	IF NO MORE FILES ARE LEFT IN THE QUEUE GO TO DONE WARNING
     if "%~1" == "" goto:done
 
-	rem Set the target drive letter
+	REM Set the target drive letter
 	set TargetDrive=%~d1
 
 	wmic logicaldisk where "DeviceID='%TargetDrive%'" get freespace
-	
 	set count=0 
 	for /F "delims=" %%a in ('wmic logicaldisk where "DeviceID='%TargetDrive%'" get freespace') do ( 
 	set freediskspace=%%a 
@@ -52,12 +65,11 @@ setlocal EnableDelayedExpansion
 	del %temp%.\tmp.vbs
 	
 	cls
-	
-	title FFMPEG - Making PNGs from %~1
+	set /A CURRENT+=1
+	title FFMPEG - [%CURRENT%/%COUNTER%] Making PNGs from %~1
 	CALL :banner
 	echo.
 	echo [101;93m COUNTING FRAMES... [0m
-    
     ::  Get FPS
     for /F "delims=" %%I in ('@ffprobe.exe -v error -select_streams v:0 -show_entries stream^=r_frame_rate -of default^=nokey^=1:noprint_wrappers^=1 "%~1"') do set "framerate=%%I"
     ::  Separation of FRAMES / SECONDS
@@ -72,10 +84,10 @@ setlocal EnableDelayedExpansion
     set /A frame_number="%duration_by_frames%/%seconds%"
     set /a Log="1%frame_number:~1%-%frame_number:~1% -0"
     set /a Len="%Log:0=+1%"
-    ::  Dump info to user
-    echo [0m Duration: [30;107m %duration_rounded%s [0m
-    echo [0m Frames per second: [30;107m %framerate%s [0m
-    echo [0m Total number of frames: [30;107m %frame_number% [0m
+    ::  Print info for user to read
+    echo [0mDuration: [30;107m %duration_rounded%s [0m
+    echo [0mFrames per second: [30;107m %framerate%s [0m
+    echo [0mTotal number of frames: [30;107m %frame_number% [0m
 
     echo.
     echo [101;93m VALIDATE OUTPUT FOLDER... [0m
@@ -85,26 +97,22 @@ setlocal EnableDelayedExpansion
 
 	REM Create an output folder with the same name as the input file (without extension)
 	::for %%F in ("%input_file%") do set "output_folder=%%~dpnF_temp"
-	set "output_folder=%temp%/%~n1_frame_temp"
+	set "output_folder=%temp%/frame_temp"
 
 	REM Resetting temp folder
 	if EXIST %output_folder% RD /S /Q "!output_folder!"
 	mkdir "!output_folder!"
 
-	REM Use ffprobe to get the duration of the video
-	for /f "tokens=*" %%a in ('ffmpeg -i "!input_file!" 2^>^&1 ^| find "Duration"') do set "duration=%%a"
-	for /f "tokens=2 delims=:" %%b in ("!duration!") do set "duration=%%b"
-	set "duration=!duration: =!"
-
 	REM Calculate the time interval for extracting frames
-	set /a "interval=!duration! / !num_frames!"
-
+	set /A interval="%duration_rounded%/%num_frames%"
 	REM Extract frames using ffmpeg
-	echo [0m Extracting sample for output file size evaluation
+	echo Extracting sample for output file size evaluation.
+	echo This might take a while...
 	set "temp_frame_size=0"
-	for /l %%i in (1,1,!num_frames!) do (
-		set /a "time=%%i * !interval!"
-		ffmpeg -hide_banner -loglevel warning -hwaccel auto -i "!input_file!" -ss !time! -frames:v 1 -f image2 -vcodec png -map_metadata 0 "!output_folder!\frame%%i%%01d.png"
+	for /l %%i in (1,1,%num_frames%) do (
+		set /a "jump=%%i*%interval%"
+		set /a "endnum=%%i"
+		ffmpeg -noaccurate_seek -ss !jump! -hide_banner -loglevel error -i "!input_file!" -map 0:v:0 -sn -frames:v 1 "!output_folder!/thumb_!endnum!.png"
 	)
 	
 	REM Calculate the total combined size of frames
@@ -120,19 +128,20 @@ setlocal EnableDelayedExpansion
 
 	set /a "projected_file_size=%temp_single_frame_size%*%frame_number%"
 	set /a "projected_file_size/=1024"
-	set /a "projected_file_size+=1024"
 
+	set /a "freediskspace-=1024"
 	set /a "freediskspace/=1024"
 
-	echo [0m Projected file size: [30;107m %projected_file_size% MB [0m
+	echo [0mProjected file size: [30;107m ca. %projected_file_size% MB [0m
 
 	if %freediskspace% LEQ %projected_file_size% (
-		echo [0m Free disk space: [30;41m %freediskspace% MB [0m is not enough to host output
+		echo [0mFree disk space: [30;41m %freediskspace% MB [0m is not enough to host output
+		timeout /t 10
 		goto :abort
 	)
 
 	if %freediskspace% GTR %projected_file_size% (
-		echo [0m Free disk space: [30;42m %freediskspace% MB [0m
+		echo [0mFree disk space: [30;42m %freediskspace% MB [0m
 	)
 
 	::	echo Frames extracted successfully in "!output_folder!".
@@ -146,17 +155,17 @@ setlocal EnableDelayedExpansion
 
 :MAKEFOLDER
     ::	CREATE A FOLDER TO PLACE THE OUTPUT IMAGES
-	if NOT DEFINED replace_folder echo [0m Output folder non present, will be created now
+	if NOT DEFINED replace_folder echo [0mOutput folder non present, will be created now
     md "%~dp1\%~n1-png%dirsfx%"
 	set "dirsfx="
 	set "replace_folder="
 
-    echo [0m Output folder [30;42m READY [0m
+    echo [0mOutput folder [30;42m READY [0m
 
     ::  ACTUAL ENCODING
 	echo.
-	echo.
 	echo [101;93m ENCODING... [0m
+	echo Computing [%CURRENT%/%COUNTER%]
 	echo.
 
 	ffmpeg ^
@@ -165,6 +174,8 @@ setlocal EnableDelayedExpansion
 		-stats ^
 		-hwaccel auto ^
 		-y -i "%~1" ^
+		-map 0:v:0 ^
+		-sn ^
 		-f image2 ^
 		-vcodec png ^
 		-map_metadata 0 ^
@@ -172,7 +183,7 @@ setlocal EnableDelayedExpansion
     
     IF NOT ["%errorlevel%"]==["0"] goto:error
 	echo [92m%~n1 Done![0m
-	title FFMPEG - We did it! Extraction of frames as PNGs from "%~1" completed!
+	title "FFMPEG - We did it!"
 
 	    shift
 	    goto:next
@@ -185,6 +196,7 @@ setlocal EnableDelayedExpansion
  	   ) ELSE ( 
 			goto :error_choice
 		)
+		
 :error_choice
 	cls
 	CALL :banner
